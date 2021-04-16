@@ -6,6 +6,9 @@ import tkinter as tk
 from tkinter import ttk 
 import model
 import json
+import editView
+
+content = ""
 
 class TabManager:
 
@@ -14,6 +17,7 @@ class TabManager:
         self.nb = nb
         self.tabList = list()
         self.tabFrames = list()
+        self.tabContents = list()
     
     def removeTab(self, tabName):
         for t in self.tabList:
@@ -48,21 +52,21 @@ class TabManager:
         #self.showTabs()
 
     def updateNoteBook(self):
+        self.tabContents.clear()
         self.tabFrames.clear()
         for t in self.tabList:
             try:
                 self.nb.forget(t["index"])
                 
             except:
-                print(t["title"])
-                print("NOT FOUND")
+                print("")
             finally:
                 print(self.nb.tabs())
             
             self.tabFrames.append(ttk.Frame(self.nb))
-            tabContent = tk.Text(self.tabFrames[t["index"]], height="300", width="400")
-            tabContent.insert(tk.INSERT, t["content"])
-            tabContent.pack()
+            self.tabContents.append(tk.Text(self.tabFrames[t["index"]], height="300", width="400"))
+            self.tabContents[t["index"]].insert(tk.INSERT, t["content"])
+            self.tabContents[t["index"]].pack()
             #tabContent.pack()
             #tabContent.place(anchor='e')
             #self.tabFrames[t["index"]].pack()
@@ -76,8 +80,10 @@ class TabManager:
         
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    global directory
     directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
     f = open(directory)
+    global content
     content = f.read()
     filename = directory[::-1].split("/")[0][::-1]
     mw.sheets.appendTab(filename, content)
@@ -98,20 +104,20 @@ def createTree(tree, jsonObj, fatherName):
         counter = 0
         for item in jsonObj:
             if jsonString.startswith("["):
-                tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter))
+                tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter), values=(""))
                 nodeText = createTree(tree, item, fatherName+str(counter))
             else:
-                tree.insert(fatherName, 'end', fatherName+str(item), text=str(item))
+                tree.insert(fatherName, 'end', fatherName+str(item), text=str(item), values=(""))
                 val = jsonObj[item]
                 nodeText = createTree(tree, val, fatherName+str(item))
 
             if nodeText.find("{") + nodeText.find("[") == -2:
                 if jsonString.startswith("["):
                     tree.delete(fatherName + str(counter))
-                    tree.insert(fatherName, 'end', fatherName + str(counter), text=str(counter) + ": " + nodeText)
+                    tree.insert(fatherName, 'end', fatherName + str(counter), text=str(counter) + ": " + nodeText, values=(""))
                 else:
                     tree.delete(fatherName + str(item))
-                    tree.insert(fatherName, 'end', fatherName + str(item), text=str(item) + ": " + nodeText)
+                    tree.insert(fatherName, 'end', fatherName + str(item), text=str(item) + ": " + nodeText, values=(""))
 
                 
 
@@ -120,8 +126,12 @@ def createTree(tree, jsonObj, fatherName):
         print("Dead Node Reached")
     return jsonString
 
+def startEdit(mw):
+    editWindow = tk.Tk()
+    ew = editView.EditView(editWindow, mw.explorerMenu, content)
 
-        
+def onTreeClick():
+    pass
             
 
        

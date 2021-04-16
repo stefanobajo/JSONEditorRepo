@@ -19,7 +19,7 @@ class MainWindow:
     def __init__(self, app):
         
         app.title("GUI Application of Python") 
-        app.geometry("900x400")
+        app.geometry("1080x500")
 
         appMenu = self.drawMenuBar(app)
 
@@ -43,9 +43,14 @@ class MainWindow:
         
         # Creating treeview window
         explorerMenu = self.drawExplorerMenu(explorerFrame)
+        explorerMenu["columns"]=("Edit")
+        explorerMenu.column("Edit", width=270, minwidth=270, stretch=tk.NO)
+        explorerMenu.heading("Edit", text="Edit",anchor=tk.W)
+        explorerMenu["displaycolumns"] = ("")
         explorerMenu.grid(row=1, column=0, padx=(5,0))
         
-        
+        editButton = ttk.Button(app, text = "Edit", command=partial(controller.startEdit, self))
+        editButton.grid(row=2, column=0, pady=(0, 5))
         
 
         
@@ -79,9 +84,9 @@ class MainWindow:
         menubar = tk.Menu(app)
 
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open", command=partial(controller.openDialog, self))
+        filemenu.add_command(label="Open", command = partial(controller.openDialog, self))
         filemenu.add_command(label="Save")
-        filemenu.add_command(label="Exit")
+        filemenu.add_command(label="Exit", command = exit)
 
         menubar.add_cascade(label="File", menu=filemenu)
         return menubar

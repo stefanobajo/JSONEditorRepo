@@ -49,3 +49,24 @@ def createTreeFromArray(tree, jsonArray, fathername):
         tree.insert(fathername, 'end', str(jsonObj), text=str(jsonObj))
         print("Array rendered")
 '''
+'''
+import tkinter as tk # python3
+from tkinter import ttk
+root = tk.Tk()
+myList = tk.Listbox(root)
+myText = "A list item"
+
+fr = ttk.Frame(myList)
+fr.pack()
+
+lbl = tk.Label(fr, text=myText, anchor="w", font=("Helvetica", "24"))
+lbl.pack(side="top", fill="x", anchor="w")
+
+button = ttk.Button(fr, text="BUTTON")
+button.pack(side="top", fill="x", anchor="e")
+
+myList.insert(tk.END, fr)
+myList.pack()
+
+root.mainloop()
+'''
