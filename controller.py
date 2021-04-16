@@ -76,7 +76,7 @@ class TabManager:
         
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    directory = askopenfilename(initialdir = "C:/Users/stefe", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+    directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
     f = open(directory)
     content = f.read()
     filename = directory[::-1].split("/")[0][::-1]
@@ -85,44 +85,43 @@ def openDialog(mw):
     content.lstrip("{")
     content.rstrip("}")
     contentObj = json.loads(content)
-    createTreeFromObject(mw.explorerMenu, contentObj, "root")
+    createTree(mw.explorerMenu, contentObj, "root")
     
     messagebox.showinfo("Complimenti!", "Call succesful: " + filename)
 
-def createTreeFromObject(tree, jsonObj, fathername):
-    if fathername == "root":
-        fathername = ""
-    
-    #tree.insert('', 'end', fathername.casefold(), text = fathername)
-    for item in jsonObj:
-        try:
-            val = jsonObj[item]
-            tree.insert(fathername, 'end', item, text=item)
-            firstCurly = json.dumps(val).find("{")
-            firstSquare = json.dumps(val).find("[")
-            if firstSquare < firstCurly and firstCurly + firstSquare > -2:
-                createTreeFromArray(tree, val, item)
-            else:
-                createTreeFromObject(tree, val, item)
-        except:
-            print("Object rendered")
-        
+def createTree(tree, jsonObj, fatherName):
+    if fatherName == "root":
+        fatherName = ""
 
-def createTreeFromArray(tree, jsonArray, fathername):
-        
-    #tree.insert('', 'end', fathername.casefold(), text = fathername)
-    for item in range(len(jsonArray)):
-        try:
-            val = jsonArray[item]
-            tree.insert(fathername.__str__(), 'end', item.__str__(), text=val)
-            firstCurly = json.dumps(val).find("{")
-            firstSquare = json.dumps(val).find("[")
-            if firstCurly < firstSquare and firstCurly + firstSquare > -2:
-                createTreeFromObject(tree, val, item)
+    jsonString = json.dumps(jsonObj)
+    if(jsonString.startswith("{") or jsonString.startswith("[")):
+        counter = 0
+        for item in jsonObj:
+            if jsonString.startswith("["):
+                tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter))
+                nodeText = createTree(tree, item, fatherName+str(counter))
             else:
-                createTreeFromArray(tree, val, item)
-        except:
-            print("Array rendered")
+                tree.insert(fatherName, 'end', fatherName+str(item), text=str(item))
+                val = jsonObj[item]
+                nodeText = createTree(tree, val, fatherName+str(item))
+
+            if nodeText.find("{") + nodeText.find("[") == -2:
+                if jsonString.startswith("["):
+                    tree.delete(fatherName + str(counter))
+                    tree.insert(fatherName, 'end', fatherName + str(counter), text=str(counter) + ": " + nodeText)
+                else:
+                    tree.delete(fatherName + str(item))
+                    tree.insert(fatherName, 'end', fatherName + str(item), text=str(item) + ": " + nodeText)
+
+                
+
+            counter += 1
+    else:
+        print("Dead Node Reached")
+    return jsonString
+
+
+        
             
 
        
