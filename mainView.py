@@ -49,7 +49,8 @@ class MainWindow:
         explorerMenu["displaycolumns"] = ("")
         explorerMenu.grid(row=1, column=0, padx=(5,0))
         
-        editButton = ttk.Button(app, text = "Edit", command=partial(controller.startEdit, self))
+
+        editButton = ttk.Button(app, text = "Edit", command=controller.startEdit)
         editButton.grid(row=2, column=0, pady=(0, 5))
         
 

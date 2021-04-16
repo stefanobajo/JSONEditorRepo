@@ -77,6 +77,56 @@ class TabManager:
        #     f.pack()
             #.pack(expand = True, side = RIGHT)
 
+class EditorManager:
+    def __init__(self, editFrame):
+        self.editList = tk.Listbox(editFrame)
+        self.saveButton = ttk.Button(self.editList, text="SAVE")
+        self.saveButton.pack(side=tk.TOP, fill=tk.X, anchor="n")
+        self.itemFrameList = list()
+
+        self.editList.pack(side=tk.TOP, fill=tk.X, anchor="n")
+        
+    
+    def addItem(self, element):
+        frame = ttk.Frame(self.editList)
+        
+        
+
+        jsonLabel = ttk.Label(frame, text=element)
+        jsonEdit = tk.Text(frame)
+
+        #editFrame.pack(side=tk.TOP, fill=tk.BOTH, anchor="e")
+        #editList.pack(side=tk.TOP, fill=tk.Y, anchor="n")
+        
+        frame.pack(side=tk.LEFT, fill=tk.X, anchor="w")
+        jsonLabel.pack(side=tk.LEFT, anchor="w")
+        jsonEdit.pack(side=tk.RIGHT, anchor="e")
+        self.itemFrameList.append(frame)
+
+def setSeq(jsonObj, counter = 0):
+    jsonString = json.dumps(jsonObj)
+
+    for item in jsonObj:
+        if item.startswith("{"):
+            setSeq(item, counter)
+        val = jsonObj[item]
+        if jsonString.startswith("{"):
+            if isinstance(val, dict):
+                setSeq(val, counter)
+            if item == "seq":
+                val = counter
+                print("seq = " + str(val))
+                counter += 1
+
+                
+
+                
+                
+                
+
+                
+          
+    
         
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -92,8 +142,6 @@ def openDialog(mw):
     content.rstrip("}")
     contentObj = json.loads(content)
     createTree(mw.explorerMenu, contentObj, "root")
-    
-    messagebox.showinfo("Complimenti!", "Call succesful: " + filename)
 
 def createTree(tree, jsonObj, fatherName):
     if fatherName == "root":
@@ -126,12 +174,12 @@ def createTree(tree, jsonObj, fatherName):
         print("Dead Node Reached")
     return jsonString
 
-def startEdit(mw):
+def startEdit():
     editWindow = tk.Tk()
-    ew = editView.EditView(editWindow, mw.explorerMenu, content)
+    global ew
+    ew = editView.EditView(editWindow, content)
 
-def onTreeClick():
-    pass
+
             
 
        
