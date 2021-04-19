@@ -118,15 +118,22 @@ def setSeq(jsonObj, counter = 0):
                 print("seq = " + str(val))
                 counter += 1
 
-                
-
-                
-                
-                
-
-                
-          
+def focusElement(text, s):
+    text.tag_remove('found', '1.0', tk.END)
     
+    if s:
+        idx = '1.0'
+        while 1:
+            idx = text.search(s, idx, nocase=1, stopindex=tk.END)
+            if not idx: break
+            lastidx = '%s+%dc' % (idx, len(s))
+            text.tag_add('found', idx, lastidx)
+            idx = lastidx
+            text.see(idx)  # Once found, the scrollbar automatically scrolls to the text
+        text.tag_config('found', foreground='red')
+#searchent.focus_set()
+
+                
         
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -135,11 +142,13 @@ def openDialog(mw):
     f = open(directory)
     global content
     content = f.read()
+    f.close()
     filename = directory[::-1].split("/")[0][::-1]
     mw.sheets.appendTab(filename, content)
 
     content.lstrip("{")
     content.rstrip("}")
+    global contentObj
     contentObj = json.loads(content)
     createTree(mw.explorerMenu, contentObj, "root")
 
@@ -152,32 +161,74 @@ def createTree(tree, jsonObj, fatherName):
         counter = 0
         for item in jsonObj:
             if jsonString.startswith("["):
-                tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter), values=(""))
+                try:
+                    tree.insert(fatherName, 'end', fatherName+str(counter), text=item["camp"])
+                except:
+                    tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter))
                 nodeText = createTree(tree, item, fatherName+str(counter))
             else:
-                tree.insert(fatherName, 'end', fatherName+str(item), text=str(item), values=(""))
+                tree.insert(fatherName, 'end', fatherName+str(item), text=str(item))
                 val = jsonObj[item]
                 nodeText = createTree(tree, val, fatherName+str(item))
 
             if nodeText.find("{") + nodeText.find("[") == -2:
                 if jsonString.startswith("["):
                     tree.delete(fatherName + str(counter))
-                    tree.insert(fatherName, 'end', fatherName + str(counter), text=str(counter) + ": " + nodeText, values=(""))
+                    tree.insert(fatherName, 'end', fatherName + str(counter), text=str(counter) + ": " + nodeText)
                 else:
                     tree.delete(fatherName + str(item))
-                    tree.insert(fatherName, 'end', fatherName + str(item), text=str(item) + ": " + nodeText, values=(""))
+                    tree.insert(fatherName, 'end', fatherName + str(item), text=str(item) + ": " + nodeText)
 
                 
 
             counter += 1
     else:
-        print("Dead Node Reached")
+        pass
     return jsonString
 
-def startEdit():
-    editWindow = tk.Tk()
-    global ew
-    ew = editView.EditView(editWindow, content)
+def getField(name):
+    fld = contentObj["def"]["flds"]["fld"]
+
+    for item in fld:
+        if item["camp"].casefold() == name.casefold():
+            return item
+    return None
+
+def isField(element):
+    if getField(element) is not None:
+        return True
+    else:
+        return False
+
+def getBooleanVals(element):
+    
+    values = list()
+    item = getField(element)
+    for camp in item:
+        if item[camp] == 0 and camp != "seq":
+            values.append(False)
+        else:
+            if item[camp] == 1 and camp != "seq":
+                values.append(True)
+    return values
+
+def saveChanges(fr):
+    item = getField(fr.cget("text"))
+    
+    for chk in fr.winfo_children():
+        camp = chk.cget("text")
+        if chk.cget("variable"):
+            item[camp] = 1
+        else:
+            item[camp] = 0
+    f = open(directory, 'w')
+    print(json.dumps(contentObj))
+    f.write(json.dumps(contentObj))
+    f.close()
+    messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
+
+
+
 
 
             
