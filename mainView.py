@@ -41,7 +41,7 @@ class MainWindow:
             explorerFrame, 
             text ="Treeview(hierarchical)"
         )
-        explorerLabel.grid(row=0, column=0, padx=(5,0), sticky='W')
+        explorerLabel.grid(row=0, column=0, padx=(1,0), sticky='W')
         
         # Creating treeview window
         explorerMenu = ttk.Treeview(explorerFrame)
@@ -49,7 +49,7 @@ class MainWindow:
         #explorerMenu.column("Edit", width=270, minwidth=270, stretch=tk.NO)
         #explorerMenu.heading("Edit", text="Edit",anchor=tk.W)
         #explorerMenu["displaycolumns"] = ("")
-        explorerMenu.grid(row=1, column=0, padx=(5,0), sticky='W')
+        explorerMenu.grid(row=1, column=0, padx=(1,0), sticky='W')
 
         setSeqBtn = ttk.Button(explorerFrame, text="Set seq", command=controller.setSeq)
         setSeqBtn.grid(row=2, column=0)
@@ -77,7 +77,7 @@ class MainWindow:
         )
         sheets = controller.TabManager(noteBook)
         sheets.appendTab("new 1", "")
-        sheets.nb.grid(row=0, column=1, rowspan=3, sticky='N')
+        sheets.nb.grid(row=0, column=1, rowspan=3, columnspan=3, sticky='N')
         
 
         self.app = app
@@ -105,14 +105,20 @@ class MainWindow:
     def drawEditForm(self, app, element, vals):
         group = ttk.Labelframe(app, text=element)
         flags = list()
+        textFlds = list()
         counter = 0
+        counterTxt = 0
         try:
             item = controller.getField(element)
             for camp in item:
+
+                r = counter % 4
+                c = int(counter / 4)
+
                 if (item[camp] == 0 or item[camp] == 1) and camp != "seq":
                                    
                     
-                    flags.append(tk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp)))
+                    flags.append(tk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp, "FLAGCHANGE", None)))
                     
                     if vals[counter]: 
                         flags[len(flags)-1].select()
@@ -120,12 +126,71 @@ class MainWindow:
                     else:
                         flags[len(flags)-1].deselect()
                         controller.changes[camp] = False
-                    
-                    r = counter % 4
-                    c = int(counter / 4)
-                    
                     flags[len(flags)-1].grid(row=r, column=c)
                     counter += 1
+                
+
+            
+
+            for camp in item:
+
+                r = counterTxt % 4
+                c = int(counterTxt / 4)
+
+                if (item[camp] != 0 and item[camp] != 1 and camp!="cedt" and camp!="lbl") or camp == "seq":
+                    txtFrame = ttk.Frame(group)
+                    txtLabel = ttk.Label(txtFrame, text=camp)
+                    txtLabel.pack(side=tk.LEFT)
+                    txtText = tk.Text(txtFrame, width=15, height=1)
+                    txtText.bind('<KeyRelease>', partial(controller.insertChange, camp, "TEXTCHANGE"))
+                    try:
+                        txtText.insert(tk.INSERT, item[camp])
+                    except:
+                        print("ROTTO")
+
+                    txtText.pack(side=tk.RIGHT)
+
+                    textFlds.append(txtFrame)
+                    txtFrame.grid(row=4+r, column=c)
+                    counterTxt +=1
+            #-------------CASO CAMPO CEDT-------------------
+            txtFrame1 = ttk.Frame(group)
+            txtLabel1 = ttk.Label(txtFrame1, text="cedt")
+            txtLabel1.pack(side=tk.LEFT)
+            txtText1 = tk.Text(txtFrame1, width=15, height=4)
+            txtText1.bind('<KeyRelease>', partial(controller.insertChange, "cedt", "TEXTCHANGE"))
+            try:
+                txtText1.insert(tk.INSERT, item["cedt"])
+            except:
+                print("ROTTO")
+
+            txtText1.pack(side=tk.RIGHT)
+
+            textFlds.append(txtFrame1)
+            c = int(counterTxt / 4) + 1
+            txtFrame1.grid(row=4, column=c, rowspan=4)
+
+            #-----------CAMPO LBL-----------------------
+            txtFrame2 = ttk.Frame(group)
+            txtLabel2 = ttk.Label(txtFrame2, text="lbl")
+            txtLabel2.pack(side=tk.LEFT)
+            txtText2 = tk.Text(txtFrame2, width=15, height=4)
+            txtText2.bind('<KeyRelease>', partial(controller.insertChange, "lbl", "TEXTCHANGE"))
+            try:
+                txtText2.insert(tk.INSERT, item["lbl"])
+            except:
+                print("ROTTO")
+
+            txtText2.pack(side=tk.RIGHT)
+
+            textFlds.append(txtFrame2)
+            c+=1
+            txtFrame2.grid(row=4, column=c, rowspan=4)
+    
+
+                
+                    
+
         except:
             traceback.print_exc()
         
@@ -145,7 +210,7 @@ class MainWindow:
             global flags
             flags = controller.getBooleanVals(element)
             self.editForm = self.drawEditForm(self.app, element, flags)
-            self.editForm.grid(row=2, column=0, columnspan=2)
+            self.editForm.grid(row=3, column=0, columnspan=4)
         else:
             self.editForm.grid_forget()
 

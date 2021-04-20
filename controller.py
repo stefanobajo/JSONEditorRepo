@@ -7,6 +7,7 @@ from tkinter import ttk
 import model
 import json
 import editView
+import re
 
 content = ""
 changes = dict()
@@ -217,8 +218,14 @@ def getBooleanVals(element):
                 values.append(True)
     return values
 
-def insertChange(name):
-    changes[name] = not changes[name]
+def insertChange(name, changeType, event):
+    if changeType == "FLAGCHANGE" : changes[name] = not changes[name]
+    else:
+        val = event.widget.get("1.0", tk.END)
+        val.rstrip("\n")
+        changes[name] = val
+
+    
 
 def setSeq():
     f = open(directory, 'r')
@@ -246,13 +253,19 @@ def setSeq():
 def saveChanges(fr):
     item = getField(fr.cget("text"))
     
-    for chk in fr.winfo_children():
-        camp = chk.cget("text")
-        if camp != "Save":
-            if changes[camp]:
-                item[camp] = 1
+    for ch in changes:
+        
+        if isinstance(changes[ch], bool):
+            if changes[ch]:
+                item[ch] = 1
             else:
-                item[camp] = 0
+                item[ch] = 0
+        else:
+            if re.search("[0-9]*", changes[ch]) and not re.search("[a-z]* | [A-Z]*", changes[ch]):
+                item[ch] = int(changes[ch])
+            else:
+                item[ch] = changes[ch]
+
     f = open(directory, 'w')
     print(json.dumps(contentObj))
     f.write(json.dumps(contentObj))
