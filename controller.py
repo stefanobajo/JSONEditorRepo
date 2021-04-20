@@ -7,15 +7,17 @@ from tkinter import ttk
 import model
 import json
 import editView
-import re
+from functools import partial
 
 content = ""
+
 changes = dict()
 
 class TabManager:
 
-    def __init__(self, nb):
+    def __init__(self, mw, nb):
         nb.grid_propagate(True)
+        nb.bind_all("<<Paste>>", partial(onPaste, mw))
         self.nb = nb
         self.tabList = list()
         self.tabFrames = list()
@@ -66,6 +68,7 @@ class TabManager:
                 print(self.nb.tabs())
             
             self.tabFrames.append(ttk.Frame(self.nb))
+            
             self.tabContents.append(tk.Text(self.tabFrames[t["index"]], height="300", width="400"))
             self.tabContents[t["index"]].insert(tk.INSERT, t["content"])
             self.tabContents[t["index"]].pack()
@@ -73,6 +76,7 @@ class TabManager:
             #tabContent.place(anchor='e')
             #self.tabFrames[t["index"]].pack()
             self.nb.add(self.tabFrames[t["index"]], text=t["title"])
+            
     
     #def showTabs(self):
        # for f in self.tabFrames:
@@ -135,9 +139,15 @@ def focusElement(text, s):
             idx = lastidx
             text.see(idx)  # Once found, the scrollbar automatically scrolls to the text
         text.tag_config('found', foreground='red')
-#searchent.focus_set()
 
-                
+def onPaste(mw, event):
+    global directory
+    directory = "EMPTY"
+    global content
+    content = mw.app.clipboard_get()
+    global contentObj
+    contentObj = json.loads(content)
+    createTree(mw.explorerMenu, contentObj, "root")
         
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -261,19 +271,38 @@ def saveChanges(fr):
             else:
                 item[ch] = 0
         else:
-            if re.search("[0-9]*", changes[ch]) and not re.search("[a-z]* | [A-Z]*", changes[ch]):
+            if ch=="id" or ch=="seq" or ch=="width" or ch=="len":
                 item[ch] = int(changes[ch])
             else:
                 item[ch] = changes[ch]
-
+    if directory == "EMPTY":
+        Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+        #global directory
+        directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+        
     f = open(directory, 'w')
     print(json.dumps(contentObj))
-    f.write(json.dumps(contentObj))
+    try:
+        f.write(json.dumps(contentObj, indent=4))
+    except:
+        print("Error Saving")
     f.close()
     messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
 
+def showSaveDialog():
+    
+    global content
+    content = f.read()
+    f.close()
+    filename = directory[::-1].split("/")[0][::-1]
+    mw.sheets.appendTab(filename, content)
 
-
+    content.lstrip("{")
+    content.rstrip("}")
+    global contentObj
+    contentObj = json.loads(content)
+    createTree(mw.explorerMenu, contentObj, "root")
+    mw.setSeqBtn.grid()
 
 
             

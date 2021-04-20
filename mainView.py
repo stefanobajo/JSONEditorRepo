@@ -75,7 +75,7 @@ class MainWindow:
             height="310",
             width="410"
         )
-        sheets = controller.TabManager(noteBook)
+        sheets = controller.TabManager(self, noteBook)
         sheets.appendTab("new 1", "")
         sheets.nb.grid(row=0, column=1, rowspan=3, columnspan=3, sticky='N')
         
