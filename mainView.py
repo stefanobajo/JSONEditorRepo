@@ -3,6 +3,8 @@
 # application using tkinter
  
 # Importing tkinter
+import traceback
+import sys
 import tkinter as tk
 import controller
 # Importing ttk from tkinter
@@ -103,17 +105,24 @@ class MainWindow:
             item = controller.getField(element)
             for camp in item:
                 if (item[camp] == 0 or item[camp] == 1) and camp != "seq":
-                    varCamp = tk.BooleanVar(value=vals[counter])
-                    flags.append(tk.Checkbutton(group, text=camp, variable=varCamp))
-                    if vals[counter]: flags[len(flags)-1].deselect()
-
+                                   
+                    
+                    flags.append(tk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp)))
+                    
+                    if vals[counter]: 
+                        flags[len(flags)-1].select()
+                        controller.changes[camp] = True
+                    else:
+                        flags[len(flags)-1].deselect()
+                        controller.changes[camp] = False
+                    
                     r = counter % 4
                     c = int(counter / 4)
                     
                     flags[len(flags)-1].grid(row=r, column=c)
                     counter += 1
         except:
-            print("No file found")
+            traceback.print_exc()
         
 
         saveBtn = ttk.Button(group, text="Save", command=partial(controller.saveChanges, group))    
@@ -271,6 +280,7 @@ class MainWindow:
         controller.focusElement(self.sheets.tabContents[0], element)
         if controller.isField(element):
             self.editForm.grid_forget()
+            global flags
             flags = controller.getBooleanVals(element)
             self.editForm = self.drawEditForm(self.app, element, flags)
             self.editForm.grid(row=2, column=0, columnspan=2)

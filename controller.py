@@ -9,6 +9,7 @@ import json
 import editView
 
 content = ""
+changes = dict()
 
 class TabManager:
 
@@ -212,15 +213,20 @@ def getBooleanVals(element):
                 values.append(True)
     return values
 
+def insertChange(name):
+    changes[name] = not changes[name]
+
+
 def saveChanges(fr):
     item = getField(fr.cget("text"))
     
     for chk in fr.winfo_children():
         camp = chk.cget("text")
-        if chk.cget("variable"):
-            item[camp] = 1
-        else:
-            item[camp] = 0
+        if camp != "Save":
+            if changes[camp]:
+                item[camp] = 1
+            else:
+                item[camp] = 0
     f = open(directory, 'w')
     print(json.dumps(contentObj))
     f.write(json.dumps(contentObj))
