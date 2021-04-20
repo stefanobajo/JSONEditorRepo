@@ -104,6 +104,7 @@ class EditorManager:
         jsonEdit.pack(side=tk.RIGHT, anchor="e")
         self.itemFrameList.append(frame)
 
+'''
 def setSeq(jsonObj, counter = 0):
     jsonString = json.dumps(jsonObj)
 
@@ -118,6 +119,7 @@ def setSeq(jsonObj, counter = 0):
                 val = counter
                 print("seq = " + str(val))
                 counter += 1
+'''
 
 def focusElement(text, s):
     text.tag_remove('found', '1.0', tk.END)
@@ -152,6 +154,8 @@ def openDialog(mw):
     global contentObj
     contentObj = json.loads(content)
     createTree(mw.explorerMenu, contentObj, "root")
+    mw.setSeqBtn.grid()
+    
 
 def createTree(tree, jsonObj, fatherName):
     if fatherName == "root":
@@ -215,6 +219,28 @@ def getBooleanVals(element):
 
 def insertChange(name):
     changes[name] = not changes[name]
+
+def setSeq():
+    f = open(directory, 'r')
+    flines = f.readlines()
+    counter = 1
+    for line in range(len(flines)):
+        whiteSpaces = flines[line].count(" ")
+        flines[line] = flines[line].strip()
+        if flines[line].startswith('"seq":'):
+            s = ""
+            for i in range(whiteSpaces):
+                s += " "
+            flines[line] = s + '"seq": ' + str(counter) + ',\n'
+            counter += 1
+        s = ""
+        for i in range(whiteSpaces):
+            s += " "
+        flines[line] = s + flines[line] + '\n'
+    f = open(directory, 'w')
+    f.writelines(flines)
+    f.close()
+    messagebox.showinfo("Changes Saved!", "Sequence numbers setted")
 
 
 def saveChanges(fr):
