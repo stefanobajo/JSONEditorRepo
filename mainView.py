@@ -32,6 +32,7 @@ class MainWindow:
 
         
         app.config(menu=appMenu)
+        
         '''
         app.grid_rowconfigure(0, weight=1)
         app.grid_rowconfigure(1, weight=1)
@@ -107,9 +108,10 @@ class MainWindow:
     def drawMenuBar(self, app):
         menubar = tk.Menu(app)
 
+
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label="Open", command = partial(controller.openDialog, self))
-        filemenu.add_command(label="Save")
+        filemenu.add_command(label="Save", command = partial(controller.globalSave, self, ""))
         filemenu.add_command(label="Exit", command = exit)
 
         menubar.add_cascade(label="File", menu=filemenu)
@@ -170,10 +172,11 @@ class MainWindow:
             txtFrame1 = ttk.Frame(group)
             txtLabel1 = ttk.Label(txtFrame1, text="cedt")
             txtLabel1.pack(side=tk.LEFT)
-            txtText1 = tk.Text(txtFrame1, width=15, height=4)
+            txtText1 = tk.Text(txtFrame1, width=20, height=4)
             txtText1.bind('<KeyRelease>', partial(controller.insertChange, "cedt", "TEXTCHANGE"))
+            #print(controller.formatStr('{"prova": 0,"di":0,"formattazione":2}'))
             try:
-                txtText1.insert(tk.INSERT, item["cedt"])
+                txtText1.insert(tk.INSERT, controller.formatStr(str(item["cedt"])))
             except:
                 print("ROTTO")
 
@@ -187,10 +190,10 @@ class MainWindow:
             txtFrame2 = ttk.Frame(group)
             txtLabel2 = ttk.Label(txtFrame2, text="lbl")
             txtLabel2.pack(side=tk.LEFT)
-            txtText2 = tk.Text(txtFrame2, width=15, height=4)
+            txtText2 = tk.Text(txtFrame2, width=20, height=4)
             txtText2.bind('<KeyRelease>', partial(controller.insertChange, "lbl", "TEXTCHANGE"))
             try:
-                txtText2.insert(tk.INSERT, item["lbl"])
+                txtText2.insert(tk.INSERT, controller.formatStr(str(item["lbl"])))
             except:
                 print("ROTTO")
 
@@ -216,8 +219,10 @@ class MainWindow:
         
     def onTreeClick(self, event):
         item = self.explorerMenu.identify('item',event.x,event.y)
-        element = self.explorerMenu.item(item,"text")
+        element = self.explorerMenu.item(item, "text")
         controller.focusElement(self.sheets.tabContents[0], element)
+        element = str(element)
+        element = element.strip("\"")
         if controller.isField(element):
             self.editForm.grid_forget()
             global flags

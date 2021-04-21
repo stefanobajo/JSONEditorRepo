@@ -6,7 +6,6 @@ import tkinter as tk
 from tkinter import ttk 
 import model
 import json
-import editView
 from functools import partial
 import os
 import traceback
@@ -134,7 +133,7 @@ def createTree(tree, jsonObj, fatherName):
         for item in jsonObj:
             if jsonString.startswith("["):
                 try:
-                    tree.insert(fatherName, 'end', fatherName+str(counter), text=item["camp"])
+                    tree.insert(fatherName, 'end', fatherName+str(counter), text='"'+ item["camp"] + '"')
                 except:
                     tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter))
                 nodeText = createTree(tree, item, fatherName+str(counter))
@@ -149,7 +148,7 @@ def createTree(tree, jsonObj, fatherName):
                     tree.insert(fatherName, 'end', fatherName + str(counter), text=str(counter) + ": " + nodeText)
                 else:
                     tree.delete(fatherName + str(item))
-                    tree.insert(fatherName, 'end', fatherName + str(item), text=str(item) + ": " + nodeText)
+                    tree.insert(fatherName, 'end', fatherName + str(item), text='"' + str(item) + '": ' + nodeText)
 
                 
 
@@ -232,9 +231,18 @@ def saveChanges(mw):
             if ch=="id" or ch=="seq" or ch=="width" or ch=="len":
                 item[ch] = int(changes[ch])
             else:
-                item[ch] = changes[ch]
+                item[ch] = json.loads(changes[ch])
+
+    globalSave(None, json.dumps(contentObj, indent=4))
     
+def globalSave(mw, text):
+    if mw is not None:
+        text = mw.sheets.tabContents[0].get("1.0", tk.END)
     f = None
+    global content
+    content = text
+    global contentObj 
+    contentObj = json.loads(content)
     try:
         global directory
         f = open(directory, 'w')
@@ -242,21 +250,32 @@ def saveChanges(mw):
         traceback.print_exc()
         Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
         #global directory
-        directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
-        
+        directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+        global filename
+        filename = directory[::-1].split("/")[0][::-1]
+
     if f is None: f = open(directory, 'w')
     
     try:
-        f.write(json.dumps(contentObj, indent=4))
+        f.write(text)
     except:
         print("Error Saving")
+    
+    try:
+        mw.sheets.removeTab(filename)
+        mw.sheets.appendTab(filename, text)
+    except:
+        print("No filename found")
 
-    global filename
-    mw.sheets.removeTab(filename)
-    mw.sheets.appendTab(filename, json.dumps(contentObj, indent=4))
-    f.close()
     messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
 
+def formatStr(s):
+    formattedString = ""
+    for c in s:
+        if c =="'": 
+            c="\""
+        formattedString += c
+    return json.dumps(json.loads(formattedString), indent = 4)
 
 
 
