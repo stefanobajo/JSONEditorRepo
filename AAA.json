@@ -3,8 +3,7 @@
         "dt": {
             "brk": 1,
             "degb": 0,
-            "vers": 0,
-            "pgmg": "Test",
+            "bella": "Test",
             "idps": 2450,
             "agrc": 0,
             "mlts": 1
@@ -576,3 +575,4 @@
         }
     }
 }
+

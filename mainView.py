@@ -172,7 +172,7 @@ class MainWindow:
             txtFrame1 = ttk.Frame(group)
             txtLabel1 = ttk.Label(txtFrame1, text="cedt")
             txtLabel1.pack(side=tk.LEFT)
-            txtText1 = tk.Text(txtFrame1, width=20, height=4)
+            txtText1 = tk.Text(txtFrame1, width=35, height=4)
             txtText1.bind('<KeyRelease>', partial(controller.insertChange, "cedt", "TEXTCHANGE"))
             #print(controller.formatStr('{"prova": 0,"di":0,"formattazione":2}'))
             try:
@@ -190,7 +190,7 @@ class MainWindow:
             txtFrame2 = ttk.Frame(group)
             txtLabel2 = ttk.Label(txtFrame2, text="lbl")
             txtLabel2.pack(side=tk.LEFT)
-            txtText2 = tk.Text(txtFrame2, width=20, height=4)
+            txtText2 = tk.Text(txtFrame2, width=35, height=4)
             txtText2.bind('<KeyRelease>', partial(controller.insertChange, "lbl", "TEXTCHANGE"))
             try:
                 txtText2.insert(tk.INSERT, controller.formatStr(str(item["lbl"])))

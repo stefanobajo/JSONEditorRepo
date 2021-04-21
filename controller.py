@@ -3,8 +3,7 @@ from tkinter.filedialog import askopenfilename
 from tkinter import Message
 from tkinter import messagebox
 import tkinter as tk
-from tkinter import ttk 
-import model
+from tkinter import ttk
 import json
 from functools import partial
 import os
@@ -220,20 +219,23 @@ def setSeq():
 def saveChanges(mw):
     item = getField(mw.editForm.cget("text"))
     
-    for ch in changes:
-        
-        if isinstance(changes[ch], bool):
-            if changes[ch]:
-                item[ch] = 1
+    try:
+        for ch in changes:
+            
+            if isinstance(changes[ch], bool):
+                if changes[ch]:
+                    item[ch] = 1
+                else:
+                    item[ch] = 0
             else:
-                item[ch] = 0
-        else:
-            if ch=="id" or ch=="seq" or ch=="width" or ch=="len":
-                item[ch] = int(changes[ch])
-            else:
-                item[ch] = json.loads(changes[ch])
-
-    globalSave(None, json.dumps(contentObj, indent=4))
+                if ch=="id" or ch=="seq" or ch=="width" or ch=="len":
+                    item[ch] = int(changes[ch])
+                else:
+                    item[ch] = json.loads(changes[ch])
+        globalSave(None, json.dumps(contentObj, indent=4))
+    except:
+        messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
+    
     
 def globalSave(mw, text):
     if mw is not None:
@@ -242,32 +244,39 @@ def globalSave(mw, text):
     global content
     content = text
     global contentObj 
-    contentObj = json.loads(content)
+    contentObj = None
     try:
-        global directory
-        f = open(directory, 'w')
+        contentObj = json.loads(content)
     except:
-        traceback.print_exc()
-        Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-        #global directory
-        directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
-        global filename
-        filename = directory[::-1].split("/")[0][::-1]
+        messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
+        
+    if contentObj is not None:
 
-    if f is None: f = open(directory, 'w')
-    
-    try:
-        f.write(text)
-    except:
-        print("Error Saving")
-    
-    try:
-        mw.sheets.removeTab(filename)
-        mw.sheets.appendTab(filename, text)
-    except:
-        print("No filename found")
+        try:
+            global directory
+            f = open(directory, 'w')
+        except:
+            traceback.print_exc()
+            Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+            #global directory
+            directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+            global filename
+            filename = directory[::-1].split("/")[0][::-1]
 
-    messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
+        if f is None: f = open(directory, 'w')
+        
+        try:
+            f.write(text)
+        except:
+            print("Error Saving")
+        
+        try:
+            mw.sheets.removeTab(filename)
+            mw.sheets.appendTab(filename, text)
+        except:
+            print("No filename found")
+
+        messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
 
 def formatStr(s):
     formattedString = ""
