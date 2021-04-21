@@ -71,10 +71,11 @@ class TabManager:
             
             self.tabFrames.append(ttk.Frame(self.nb))
             
-            self.tabContents.append(tk.Text(self.tabFrames[t["index"]], width=500, height=180))
+            self.tabContents.append(tk.Text(self.tabFrames[t["index"]]))#, width=500, height=180))
             #app.grid_rowconfigure(2, weight=1)
             self.tabContents[t["index"]].insert(tk.INSERT, t["content"])
-            self.tabContents[t["index"]].pack()
+            self.tabContents[t["index"]].pack(fill=tk.BOTH)
+            self.tabFrames[t["index"]].pack(fill=tk.BOTH)
             #tabContent.pack()
             #tabContent.place(anchor='e')
             #self.tabFrames[t["index"]].pack()
@@ -156,6 +157,14 @@ def createTree(tree, jsonObj, fatherName):
         pass
     return jsonString
 
+def getFieldFromId(fid):
+    fld = contentObj["def"]["flds"]["fld"]
+
+    for item in fld:
+        if item["id"] == fid:
+            return item
+    return None
+
 def getField(name):
     fld = contentObj["def"]["flds"]["fld"]
 
@@ -234,8 +243,7 @@ def saveChanges(mw):
                     item[ch] = json.loads(changes[ch])
         globalSave(None, json.dumps(contentObj, indent=4))
     except:
-        messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
-    
+        messagebox.showwarning("Errore!", "Rilevato un errore nella seguente modifica: \n" + changes[ch])
     
 def globalSave(mw, text):
     if mw is not None:
@@ -249,7 +257,7 @@ def globalSave(mw, text):
         contentObj = json.loads(content)
     except:
         messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
-        
+
     if contentObj is not None:
 
         try:
@@ -283,8 +291,41 @@ def formatStr(s):
     for c in s:
         if c =="'": 
             c="\""
+        if c =="\n": 
+            c=""
         formattedString += c
     return json.dumps(json.loads(formattedString), indent = 4)
 
+def addElement(mw):
+    element = dict()
+    for fld in mw.editForm.winfo_children():
+        if(isinstance(fld, tk.Checkbutton)):
+            name = fld.cget("text")
+            val = changes[fld.cget("text")]
+            element[name] = val
+        else:
+            if(isinstance(fld, ttk.Frame)):
+                frChidren = fld.winfo_children()
+                name = frChidren[0].cget("text")
+                val = frChidren[1].get("1.0", tk.END)
+                #print(name + " ------------- " + val)
+                val = val.rstrip("\n")
+                if (name=="camp" and getField(val) is not None) or (name=="id" and getFieldFromId(val) is not None):
+                    messagebox.showwarning("Attenzione!", "Stai cercando di inserire un elemento già presente!")
+                    break
+
+                element[name] = val
+    print("RESULT: \n")
+    #print(formatStr(str(element)))
+    try:
+        print(json.loads(json.dumps(element)))
+        #print(json.loads(formatStr(str(element))))
+    except:
+        print("STRINGA ROTTA")
+
+                
+    
+
+  
 
 
