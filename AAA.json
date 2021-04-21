@@ -12,7 +12,7 @@
         "flds": {
             "fld": [
                 {
-                    "flle": 1,
+                    "flle": 0,
                     "flds": "",
                     "grbx": null,
                     "fldr": "",
@@ -24,7 +24,7 @@
                     "cads": "",
                     "flbt": 0,
                     "repl": 0,
-                    "id": 666,
+                    "id": 777,
                     "grp": "",
                     "camp": "ID",
                     "tot": "01\n",

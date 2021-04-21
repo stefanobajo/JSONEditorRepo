@@ -8,9 +8,11 @@ import model
 import json
 import editView
 from functools import partial
+import os
+import traceback
 
 content = ""
-
+#directory = ""
 changes = dict()
 
 class TabManager:
@@ -141,8 +143,6 @@ def focusElement(text, s):
         text.tag_config('found', foreground='red')
 
 def onPaste(mw, event):
-    global directory
-    directory = "EMPTY"
     global content
     content = mw.app.clipboard_get()
     global contentObj
@@ -152,7 +152,7 @@ def onPaste(mw, event):
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     global directory
-    directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+    directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
     f = open(directory)
     global content
     content = f.read()
@@ -275,12 +275,18 @@ def saveChanges(fr):
                 item[ch] = int(changes[ch])
             else:
                 item[ch] = changes[ch]
-    if directory == "EMPTY":
+    
+    f = None
+    try:
+        global directory
+        f = open(directory, 'w')
+    except:
+        traceback.print_exc()
         Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
         #global directory
         directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
         
-    f = open(directory, 'w')
+    if f is None: f = open(directory, 'w')
     print(json.dumps(contentObj))
     try:
         f.write(json.dumps(contentObj, indent=4))
@@ -288,7 +294,7 @@ def saveChanges(fr):
         print("Error Saving")
     f.close()
     messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
-
+'''
 def showSaveDialog():
     
     global content
@@ -307,7 +313,7 @@ def showSaveDialog():
 
             
 
-       
+       '''
 
 
 
