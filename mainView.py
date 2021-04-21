@@ -21,27 +21,37 @@ class MainWindow:
     def __init__(self, app):
         
         app.title("GUI Application of Python") 
-        app.geometry("1080x500")
+        #app.geometry("1080x500")
+        width = app.winfo_screenwidth()               
+
+        height = app.winfo_screenheight()               
+
+        app.geometry("%dx%d" % (width, height))
 
         appMenu = self.drawMenuBar(app)
 
         
         app.config(menu=appMenu)
+        '''
         app.grid_rowconfigure(0, weight=1)
+        app.grid_rowconfigure(1, weight=1)
+        app.grid_rowconfigure(2, weight=1)
         app.grid_columnconfigure(0, weight=1)
-        #app.grid_propagate(True)
-        # Defining label of the app and calling a geometry
-        # management method i.e, pack in order to organize
-        # widgets in form of blocks before locating them
-        # in the parent widget
+        '''
+        #app.grid_rowconfigure(0, weight=1)
+        app.grid_rowconfigure(3, weight=1)
+        #app.grid_columnconfigure(1, weight=3)
+        app.grid_columnconfigure(1, weight=1)
+        app.grid_columnconfigure(3, weight=1)
+
         explorerFrame = ttk.Frame(app)
-        explorerFrame.grid(row=0, column=0)
+        explorerFrame.grid(row=0, column=0, rowspan=3, padx=(5,0))
         
         explorerLabel = ttk.Label(
             explorerFrame, 
             text ="Treeview(hierarchical)"
         )
-        explorerLabel.grid(row=0, column=0, padx=(1,0), sticky='W')
+        explorerLabel.pack(side = tk.TOP, fill=tk.X)
         
         # Creating treeview window
         explorerMenu = ttk.Treeview(explorerFrame)
@@ -49,15 +59,15 @@ class MainWindow:
         #explorerMenu.column("Edit", width=270, minwidth=270, stretch=tk.NO)
         #explorerMenu.heading("Edit", text="Edit",anchor=tk.W)
         #explorerMenu["displaycolumns"] = ("")
-        explorerMenu.grid(row=1, column=0, padx=(1,0), sticky='W')
+        explorerMenu.pack(side = tk.TOP, fill=tk.X)
 
-        setSeqBtn = ttk.Button(explorerFrame, text="Set seq", command=controller.setSeq)
-        setSeqBtn.grid(row=2, column=0)
-        setSeqBtn.grid_forget()
+        setSeqBtn = ttk.Button(explorerFrame, text="Set seq", command=partial(controller.setSeq, self))
+        setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
+        setSeqBtn.pack_forget()
 
         disablingList = [False] * 26
         editForm = self.drawEditForm(app, "test", disablingList)
-        editForm.grid(row=3, column=0, columnspan=2)
+        editForm.grid(row=3, column=0, columnspan=3)
         editForm.grid_forget()
         
 
@@ -69,15 +79,18 @@ class MainWindow:
         # Inserting parent
         
         # Placing each child items in parent widget
-        
+        sheetsFrame = ttk.Frame(app)
         noteBook = ttk.Notebook(
-            app,
+            sheetsFrame,
             height="310",
             width="410"
         )
+        
         sheets = controller.TabManager(self, noteBook)
         sheets.appendTab("new 1", "")
-        sheets.nb.grid(row=0, column=1, rowspan=3, columnspan=3, sticky='N')
+        sheets.nb.pack()
+        #side=tk.RIGHT, fill=tk.BOTH, expand=True
+        sheetsFrame.grid(row=0, column=1, rowspan=2, columnspan=2)
         
 
         self.app = app
@@ -210,7 +223,7 @@ class MainWindow:
             global flags
             flags = controller.getBooleanVals(element)
             self.editForm = self.drawEditForm(self.app, element, flags)
-            self.editForm.grid(row=3, column=0, columnspan=4)
+            self.editForm.grid(row=3, column=0, columnspan=4, padx=(5,0))
         else:
             self.editForm.grid_forget()
 

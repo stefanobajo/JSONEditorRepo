@@ -73,7 +73,8 @@ class TabManager:
             
             self.tabFrames.append(ttk.Frame(self.nb))
             
-            self.tabContents.append(tk.Text(self.tabFrames[t["index"]], height="300", width="400"))
+            self.tabContents.append(tk.Text(self.tabFrames[t["index"]], width=500, height=180))
+            #app.grid_rowconfigure(2, weight=1)
             self.tabContents[t["index"]].insert(tk.INSERT, t["content"])
             self.tabContents[t["index"]].pack()
             #tabContent.pack()
@@ -121,7 +122,7 @@ def openDialog(mw):
     global contentObj
     contentObj = json.loads(content)
     createTree(mw.explorerMenu, contentObj, "root")
-    mw.setSeqBtn.grid()
+    mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
     
 def createTree(tree, jsonObj, fatherName):
     if fatherName == "root":
@@ -207,9 +208,14 @@ def setSeq():
         for i in range(whiteSpaces):
             s += " "
         flines[line] = s + flines[line] + '\n'
+    
     f = open(directory, 'w')
     f.writelines(flines)
+    f = open(directory, 'r')
+    string = f.read()
     f.close()
+    mw.sheets.removeTab(filename)
+    mw.sheets.appendTab(filename, string)
     messagebox.showinfo("Changes Saved!", "Sequence numbers setted")
 
 def saveChanges(mw):
