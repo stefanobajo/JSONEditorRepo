@@ -195,7 +195,7 @@ class MainWindow:
             traceback.print_exc()
         
         
-        saveBtn = ttk.Button(group, text="Save", command=partial(controller.saveChanges, group))    
+        saveBtn = ttk.Button(group, text="Save", command=partial(controller.saveChanges, self))    
         saveBtn.grid(row=2, column=6)
         
         return group

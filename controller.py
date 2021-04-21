@@ -20,6 +20,7 @@ class TabManager:
     def __init__(self, mw, nb):
         nb.grid_propagate(True)
         nb.bind_all("<<Paste>>", partial(onPaste, mw))
+        
         self.nb = nb
         self.tabList = list()
         self.tabFrames = list()
@@ -51,6 +52,7 @@ class TabManager:
                 {
                     "title": tabName,
                     "content": content,
+                    "directory": "",
                     "index": index
                 }
             )
@@ -78,55 +80,8 @@ class TabManager:
             #tabContent.place(anchor='e')
             #self.tabFrames[t["index"]].pack()
             self.nb.add(self.tabFrames[t["index"]], text=t["title"])
-            
-    
-    #def showTabs(self):
-       # for f in self.tabFrames:
-       #     f.pack()
-            #.pack(expand = True, side = RIGHT)
 
-class EditorManager:
-    def __init__(self, editFrame):
-        self.editList = tk.Listbox(editFrame)
-        self.saveButton = ttk.Button(self.editList, text="SAVE")
-        self.saveButton.pack(side=tk.TOP, fill=tk.X, anchor="n")
-        self.itemFrameList = list()
 
-        self.editList.pack(side=tk.TOP, fill=tk.X, anchor="n")
-        
-    
-    def addItem(self, element):
-        frame = ttk.Frame(self.editList)
-        
-        
-
-        jsonLabel = ttk.Label(frame, text=element)
-        jsonEdit = tk.Text(frame)
-
-        #editFrame.pack(side=tk.TOP, fill=tk.BOTH, anchor="e")
-        #editList.pack(side=tk.TOP, fill=tk.Y, anchor="n")
-        
-        frame.pack(side=tk.LEFT, fill=tk.X, anchor="w")
-        jsonLabel.pack(side=tk.LEFT, anchor="w")
-        jsonEdit.pack(side=tk.RIGHT, anchor="e")
-        self.itemFrameList.append(frame)
-
-'''
-def setSeq(jsonObj, counter = 0):
-    jsonString = json.dumps(jsonObj)
-
-    for item in jsonObj:
-        if item.startswith("{"):
-            setSeq(item, counter)
-        val = jsonObj[item]
-        if jsonString.startswith("{"):
-            if isinstance(val, dict):
-                setSeq(val, counter)
-            if item == "seq":
-                val = counter
-                print("seq = " + str(val))
-                counter += 1
-'''
 
 def focusElement(text, s):
     text.tag_remove('found', '1.0', tk.END)
@@ -157,6 +112,7 @@ def openDialog(mw):
     global content
     content = f.read()
     f.close()
+    global filename
     filename = directory[::-1].split("/")[0][::-1]
     mw.sheets.appendTab(filename, content)
 
@@ -167,7 +123,6 @@ def openDialog(mw):
     createTree(mw.explorerMenu, contentObj, "root")
     mw.setSeqBtn.grid()
     
-
 def createTree(tree, jsonObj, fatherName):
     if fatherName == "root":
         fatherName = ""
@@ -235,8 +190,6 @@ def insertChange(name, changeType, event):
         val.rstrip("\n")
         changes[name] = val
 
-    
-
 def setSeq():
     f = open(directory, 'r')
     flines = f.readlines()
@@ -259,9 +212,8 @@ def setSeq():
     f.close()
     messagebox.showinfo("Changes Saved!", "Sequence numbers setted")
 
-
-def saveChanges(fr):
-    item = getField(fr.cget("text"))
+def saveChanges(mw):
+    item = getField(mw.editForm.cget("text"))
     
     for ch in changes:
         
@@ -287,33 +239,18 @@ def saveChanges(fr):
         directory = askopenfilename(initialdir = "C:/Users/stebag/Desktop/Roba/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
         
     if f is None: f = open(directory, 'w')
-    print(json.dumps(contentObj))
+    
     try:
         f.write(json.dumps(contentObj, indent=4))
     except:
         print("Error Saving")
+
+    global filename
+    mw.sheets.removeTab(filename)
+    mw.sheets.appendTab(filename, json.dumps(contentObj, indent=4))
     f.close()
     messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
-'''
-def showSaveDialog():
-    
-    global content
-    content = f.read()
-    f.close()
-    filename = directory[::-1].split("/")[0][::-1]
-    mw.sheets.appendTab(filename, content)
 
-    content.lstrip("{")
-    content.rstrip("}")
-    global contentObj
-    contentObj = json.loads(content)
-    createTree(mw.explorerMenu, contentObj, "root")
-    mw.setSeqBtn.grid()
-
-
-            
-
-       '''
 
 
 
