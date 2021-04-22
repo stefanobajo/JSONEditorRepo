@@ -19,7 +19,8 @@ class TabManager:
     def __init__(self, mw, nb):
         nb.grid_propagate(True)
         nb.bind_all("<<Paste>>", partial(onPaste, mw))
-        
+        self.mw = mw
+        nb.bind_all("<<NotebookTabChanged>>", self.tabSelected)
         self.nb = nb
         self.tabList = list()
         self.tabFrames = list()
@@ -36,7 +37,7 @@ class TabManager:
         for i in range(len(self.tabList)):
             self.tabList[i]["index"] = i
 
-    def appendTab(self, tabName, content):
+    def appendTab(self, tabName, content, dir):
         alreadyIn = False
         if (len(self.tabList) == 1 and self.tabList[0]["title"] == "new 1"):
             self.removeTab("new 1")
@@ -51,7 +52,7 @@ class TabManager:
                 {
                     "title": tabName,
                     "content": content,
-                    "directory": "",
+                    "directory": dir,
                     "index": index
                 }
             )
@@ -87,6 +88,29 @@ class TabManager:
             self.nb.add(f, text=t["title"])
             self.tabContents.append(txt)
             self.tabFrames.append(f)
+        #self.nb.select(len(self.tabFrames) - 1)
+
+    def tabSelected(self, event):
+        tabIndex = self.nb.index(self.nb.select())
+        global directory
+        directory = self.tabList[tabIndex]["directory"]
+        global filename
+        filename = self.tabList[tabIndex]["title"]
+        global content
+        content = self.tabList[tabIndex]["content"]
+        global contentObj
+        if content == "":
+            contentObj = None 
+        else:
+            content.lstrip("{")
+            content.rstrip("}")
+            contentObj = json.loads(content)
+
+        self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
+        self.mw.editForm.grid_forget()
+        createTree(self.mw.explorerMenu, contentObj, "root")
+        self.mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
+
 
 
 def focusElement(text, s):
@@ -112,24 +136,16 @@ def onPaste(mw, event):
         
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    global directory
+    #global directory
     directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
     f = open(directory)
-    global content
+    #global content
     content = f.read()
     f.close()
-    global filename
+    #global filename
     filename = directory[::-1].split("/")[0][::-1]
-    mw.sheets.appendTab(filename, content)
-
-    content.lstrip("{")
-    content.rstrip("}")
-    global contentObj
-    contentObj = json.loads(content)
-    mw.explorerMenu.delete(*mw.explorerMenu.get_children())
-    mw.editForm.grid_forget()
-    createTree(mw.explorerMenu, contentObj, "root")
-    mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
+    mw.sheets.appendTab(filename, content, directory)
+    
     
 def createTree(tree, jsonObj, fatherName):
     if fatherName == "root":
@@ -199,14 +215,17 @@ def getBooleanVals(element):
                 values.append(True)
     return values
 
-def insertChange(name, changeType, event):
-    if changeType == "FLAGCHANGE" : changes[name] = not changes[name]
+def insertChange(name, changeType, event=None):
+    name = name.strip(" ")
+    if changeType == "FLAGCHANGE" : 
+        changes[name] = not changes[name]
     else:
         val = event.widget.get("1.0", tk.END)
-        val.rstrip("\n")
+        val = val.rstrip("\n")
         changes[name] = val
 
 def setSeq(mw):
+    global directory
     f = open(directory, 'r')
     flines = f.readlines()
     counter = 1
@@ -229,8 +248,10 @@ def setSeq(mw):
     f = open(directory, 'r')
     string = f.read()
     f.close()
+    global filename
     mw.sheets.removeTab(filename)
-    mw.sheets.appendTab(filename, string)
+    
+    mw.sheets.appendTab(filename, string, directory)
     messagebox.showinfo("Changes Saved!", "Sequence numbers setted")
 
 def saveChanges(mw):
@@ -248,16 +269,21 @@ def saveChanges(mw):
                 if ch=="id" or ch=="seq" or ch=="width" or ch=="len":
                     item[ch] = int(changes[ch])
                 else:
-                    item[ch] = json.loads(changes[ch])
+                    if ch=="cedt" or ch=="lbl":
+                        item[ch] = json.loads(changes[ch])
+                    else: 
+                        item[ch] = changes[ch]
         globalSave(mw, json.dumps(contentObj, indent=4), False)
         global directory
         messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
     except:
+        traceback.print_exc()
         messagebox.showwarning("Errore!", "Rilevato un errore nella seguente modifica: \n" + changes[ch])
     
 def globalSave(mw, text, fromMenu):
     if fromMenu:
-        text = mw.sheets.tabContents[0].get("1.0", tk.END)
+        currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
+        text = mw.sheets.tabContents[currentTab].get("1.0", tk.END)
     f = None
     global content
     content = text
@@ -292,7 +318,7 @@ def globalSave(mw, text, fromMenu):
         try:
             #global filename
             mw.sheets.removeTab(filename)
-            mw.sheets.appendTab(filename, text)
+            mw.sheets.appendTab(filename, text, directory)
         except:
             print("No filename found")
 

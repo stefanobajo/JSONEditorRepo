@@ -1,591 +1,604 @@
 {
-      "def": {
-          "dt": {
-              "brk": 1,
-              "degb": 0,
-              "bella": "Test",
-              "idps": 2450,
-              "agrc": 0,
-              "mlts": 1
+    "def": {
+        "dt": {
+            "brk": 1,
+            "degb": 0,
+            "bella": "Test",
+            "idps": 2450,
+            "agrc": 0,
+            "mlts": 1
         },
-          "flds": {
-              "fld": [
+        "flds": {
+            "fld": [
                 {
-                      "flle": 1,
-                      "flds": "",
-                      "grbx": null,
-                      "fldr": "",
-                      "stato": 1,
-                      "soab": 0,
-                      "flgt": 0,
-                      "flne": 0,
-                      "cadr": "",
-                      "cads": "",
-                      "flbt": 0,
-                      "repl": 0,
-                      "id": 310720,
-                      "grp": "",
-                      "camp": "ID",
-                      "tot": "00",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 0,
-                      "file": "",
-                      "flin": 0,
-                      "rnd": 0,
-                      "dft": "",
-                      "upab": 0,
-                      "cls": 0,
-                      "cedt": {
-                          "clas": "MODIFICATO-2",
-                          "mask": "",
-                          "frmt": "555",
-                          "up": 0
+                    "flle": 0,
+                    "flds": "",
+                    "grbx": null,
+                    "fldr": "",
+                    "stato": 1,
+                    "soab": 0,
+                    "flgt": 0,
+                    "flne": 0,
+                    "cadr": "",
+                    "cads": "",
+                    "flbt": 0,
+                    "repl": 0,
+                    "id": 999,
+                    "grp": "",
+                    "camp": "ID",
+                    "tot": "00",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 0,
+                    "file": "",
+                    "flin": 0,
+                    "rnd": 0,
+                    "dft": "",
+                    "upab": 0,
+                    "cls": 0,
+                    "cedt": {
+                        "clas": "MODIFICATO-2",
+                        "mask": "",
+                        "frmt": "555",
+                        "up": 0
                     },
-                      "fleq": 0,
-                      "tsep": 0,
-                      "width": 50,
-                      "align": 0,
-                      "len": 44,
-                      "inab": 0,
-                      "vis": 0,
-                      "sign": 0,
-                      "t": "I",
-                      "klb": "identificatore",
-                      "lbl": {
-                            "lung": "$id bookrow",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 0,
+                    "tsep": 0,
+                    "width": 50,
+                    "align": 0,
+                    "len": 44,
+                    "inab": 0,
+                    "vis": 0,
+                    "sign": 0,
+                    "t": "I",
+                    "klb": "Ilcare",
+                    "lbl": {
+                        "lung": "$id bookrow",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 0,
-                      "flab": 0,
-                                                                                      "seq": 1,
-
-
-                      "wrk": 0,
-                      "req": 0,
-                      "fllk": 0,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 0,
+                    "flab": 0,
+                    "seq": 1,
+                    "wrk": 0,
+                    "req": 0,
+                    "fllk": 0,
+                    "loadv": 0,
+                    "pk": 0,
+                    "flle  ": 1,
+                    "stato ": 1,
+                    "soab  ": 0,
+                    "flgt  ": 0,
+                    "flne  ": 0,
+                    "flbt  ": 0,
+                    "repl  ": 0,
+                    "clbl  ": 0,
+                    "dec   ": 0,
+                    "flge  ": 0,
+                    "flin  ": 0,
+                    "rnd   ": 0,
+                    "upab  ": 0,
+                    "cls   ": 0,
+                    "fleq  ": 0,
+                    "tsep  ": 0,
+                    "align ": 0,
+                    "inab  ": 0,
+                    "vis   ": 0,
+                    "sign  ": 0,
+                    "fllt  ": 0,
+                    "flab  ": 0,
+                    "wrk   ": 0,
+                    "req   ": 0,
+                    "fllk  ": 0,
+                    "loadv ": 0,
+                    "pk    ": 0
                 },
                 {
-                      "flle": 0,
-                      "flds": "",
-                      "grbx": null,
-                      "fldr": "",
-                      "stato": 1,
-                      "soab": 0,
-                      "flgt": 0,
-                      "flne": 0,
-                      "cadr": "",
-                      "cads": "",
-                      "flbt": 0,
-                      "repl": 0,
-                      "id": 310719,
-                      "grp": 13591,
-                      "camp": "IDACCOUNT",
-                      "tot": "00",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 0,
-                      "file": "",
-                      "flin": 0,
-                      "rnd": 0,
-                      "dft": "",
-                      "upab": 0,
-                      "cls": 0,
-                      "cedt": {
-                          "clas": "detext",
-                          "mask": "",
-                          "frmt": "",
-                          "up": 0
+                    "flle": 0,
+                    "flds": "",
+                    "grbx": null,
+                    "fldr": "",
+                    "stato": 1,
+                    "soab": 0,
+                    "flgt": 0,
+                    "flne": 0,
+                    "cadr": "",
+                    "cads": "",
+                    "flbt": 0,
+                    "repl": 0,
+                    "id": 310719,
+                    "grp": 13591,
+                    "camp": "IDACCOUNT",
+                    "tot": "00",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 0,
+                    "file": "",
+                    "flin": 0,
+                    "rnd": 0,
+                    "dft": "",
+                    "upab": 0,
+                    "cls": 0,
+                    "cedt": {
+                        "clas": "detext",
+                        "mask": "",
+                        "frmt": "",
+                        "up": 0
                     },
-                      "fleq": 0,
-                      "tsep": 0,
-                      "width": 50,
-                      "align": 0,
-                      "len": 50,
-                      "inab": 0,
-                      "vis": 0,
-                      "sign": 0,
-                      "t": "I",
-                      "klb": "idaccount",
-                      "lbl": {
-                            "lung": "$id account",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 0,
+                    "tsep": 0,
+                    "width": 50,
+                    "align": 0,
+                    "len": 50,
+                    "inab": 0,
+                    "vis": 0,
+                    "sign": 0,
+                    "t": "I",
+                    "klb": "idaccount",
+                    "lbl": {
+                        "lung": "$id account",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 0,
-                      "flab": 0,
-                                                                                      "seq": 2,
-
-
-                      "wrk": 1,
-                      "req": 0,
-                      "fllk": 0,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 0,
+                    "flab": 0,
+                    "seq": 2,
+                    "wrk": 1,
+                    "req": 0,
+                    "fllk": 0,
+                    "loadv": 0,
+                    "pk": 0
                 },
                 {
-                      "flle": 0,
-                      "flds": "",
-                      "grbx": null,
-                      "fldr": "\ue03f",
-                      "stato": 1,
-                      "soab": 0,
-                      "flgt": 0,
-                      "flne": 0,
-                      "cadr": "",
-                      "cads": "DESC_BOOK",
-                      "flbt": 0,
-                      "repl": 0,
-                      "id": 418403,
-                      "grp": 13591,
-                      "camp": "IDBOOK",
-                      "tot": "",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 0,
-                      "file": "",
-                      "flin": 0,
-                      "rnd": 0,
-                      "dft": "",
-                      "upab": 1,
-                      "cls": 0,
-                      "cedt": {
-                          "clas": "dedyncombo",
-                          "mask": "",
-                          "pks": {
-                              "pk": {
-                                  "opps": {
-                                      "opp": [
+                    "flle": 0,
+                    "flds": "",
+                    "grbx": null,
+                    "fldr": "\ue03f",
+                    "stato": 1,
+                    "soab": 0,
+                    "flgt": 0,
+                    "flne": 0,
+                    "cadr": "",
+                    "cads": "DESC_BOOK",
+                    "flbt": 0,
+                    "repl": 0,
+                    "id": 418403,
+                    "grp": 13591,
+                    "camp": "IDBOOK",
+                    "tot": "",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 0,
+                    "file": "",
+                    "flin": 0,
+                    "rnd": 0,
+                    "dft": "",
+                    "upab": 1,
+                    "cls": 0,
+                    "cedt": {
+                        "clas": "dedyncombo",
+                        "mask": "",
+                        "pks": {
+                            "pk": {
+                                "opps": {
+                                    "opp": [
                                         {
-                                              "id": 1513573,
-                                              "valo": "TBOOKMNG.IDBOOK",
-                                              "name": "PF_LK_TBOOKS.TITLE"
+                                            "id": 1513573,
+                                            "valo": "TBOOKMNG.IDBOOK",
+                                            "name": "PF_LK_TBOOKS.TITLE"
                                         }
                                     ]
                                 },
-                                  "cpfs": {
-                                      "cpf": {
-                                          "id": 1158152,
-                                          "da": {
-                                              "camp": "IDBOOK",
-                                              "file": "TBOOKS"
+                                "cpfs": {
+                                    "cpf": {
+                                        "id": 1158152,
+                                        "da": {
+                                            "camp": "IDBOOK",
+                                            "file": "TBOOKS"
                                         },
-                                          "a": {
-                                              "camp": "IDBOOK",
-                                              "file": "TBOOKMNG"
+                                        "a": {
+                                            "camp": "IDBOOK",
+                                            "file": "TBOOKMNG"
                                         }
                                     }
                                 },
-                                  "lvlFPk": "SEARCH_BOOK",
-                                  "tit": {
-                                              "lung": "$CRM - gestione elenco account",
-                                      "klb": "crmgestioneelencoaccount"
+                                "lvlFPk": "SEARCH_BOOK",
+                                "tit": {
+                                    "lung": "$CRM - gestione elenco account",
+                                    "klb": "crmgestioneelencoaccount"
                                 },
-                                  "rd": 1,
-                                  "tpoPk": "N",
-                                  "rows": 0,
-                                  "id": 970245,
-                                  "dtit": {
-                                              "lung": "$CRM - gestione elenco account",
-                                      "klb": "crmgestioneelencoaccount"
+                                "rd": 1,
+                                "tpoPk": "N",
+                                "rows": 0,
+                                "id": 970245,
+                                "dtit": {
+                                    "lung": "$CRM - gestione elenco account",
+                                    "klb": "crmgestioneelencoaccount"
                                 },
-                                  "dtn": "CRMBOOKROW.GRID",
-                                  "dtde": "",
-                                  "clas": "dpparametricpicker",
-                                  "defv": "",
-                                  "fpps": ""
+                                "dtn": "CRMBOOKROW.GRID",
+                                "dtde": "",
+                                "clas": "dpparametricpicker",
+                                "defv": "",
+                                "fpps": ""
                             }
                         },
-                          "frmt": "",
-                          "up": 0
+                        "frmt": "",
+                        "up": 0
                     },
-                      "fleq": 0,
-                      "tsep": 0,
-                      "width": 15.3,
-                      "align": 0,
-                      "len": 8,
-                      "inab": 1,
-                      "vis": 1,
-                      "sign": 0,
-                      "t": "I",
-                      "klb": "titololibro",
-                      "lbl": {
-                          "lung": "titololibro",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 0,
+                    "tsep": 0,
+                    "width": 15.3,
+                    "align": 0,
+                    "len": 8,
+                    "inab": 1,
+                    "vis": 1,
+                    "sign": 0,
+                    "t": "I",
+                    "klb": "titololibro",
+                    "lbl": {
+                        "lung": "titololibro",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 0,
-                      "flab": 0,
-                                                                                      "seq": 3,
-
-
-                      "wrk": 0,
-                      "req": 0,
-                      "fllk": 0,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 0,
+                    "flab": 0,
+                    "seq": 3,
+                    "wrk": 0,
+                    "req": 0,
+                    "fllk": 0,
+                    "loadv": 0,
+                    "pk": 0
                 },
                 {
-                      "flle": 0,
-                      "flds": "",
-                      "grbx": null,
-                      "fldr": "",
-                      "stato": 1,
-                      "soab": 0,
-                      "flgt": 0,
-                      "flne": 0,
-                      "cadr": "",
-                      "cads": "",
-                      "flbt": 0,
-                      "repl": 0,
-                      "id": 310720,
-                      "grp": "",
-                      "camp": "DESC_BOOK",
-                      "tot": "00",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 0,
-                      "file": "",
-                      "flin": 0,
-                      "rnd": 0,
-                      "dft": "",
-                      "upab": 0,
-                      "cls": 0,
-                      "cedt": {
-                          "clas": "detext",
-                          "mask": "",
-                          "frmt": "",
-                          "up": 0
+                    "flle": 0,
+                    "flds": "",
+                    "grbx": null,
+                    "fldr": "",
+                    "stato": 1,
+                    "soab": 0,
+                    "flgt": 0,
+                    "flne": 0,
+                    "cadr": "",
+                    "cads": "",
+                    "flbt": 0,
+                    "repl": 0,
+                    "id": 310720,
+                    "grp": "",
+                    "camp": "DESC_BOOK",
+                    "tot": "00",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 0,
+                    "file": "",
+                    "flin": 0,
+                    "rnd": 0,
+                    "dft": "",
+                    "upab": 0,
+                    "cls": 0,
+                    "cedt": {
+                        "clas": "detext",
+                        "mask": "",
+                        "frmt": "",
+                        "up": 0
                     },
-                      "fleq": 0,
-                      "tsep": 0,
-                      "width": 50,
-                      "align": 0,
-                      "len": 50,
-                      "inab": 0,
-                      "vis": 0,
-                      "sign": 0,
-                      "t": "S",
-                      "klb": "descrizione",
-                      "lbl": {
-                          "lung": "$Descrizione",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 0,
+                    "tsep": 0,
+                    "width": 50,
+                    "align": 0,
+                    "len": 50,
+                    "inab": 0,
+                    "vis": 0,
+                    "sign": 0,
+                    "t": "S",
+                    "klb": "descrizione",
+                    "lbl": {
+                        "lung": "$Descrizione",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 0,
-                      "flab": 0,
-                                                                                      "seq": 4,
-
-
-                      "wrk": 0,
-                      "req": 0,
-                      "fllk": 0,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 0,
+                    "flab": 0,
+                    "seq": 4,
+                    "wrk": 0,
+                    "req": 0,
+                    "fllk": 0,
+                    "loadv": 0,
+                    "pk": 0
                 },
                 {
-                      "flle": 0,
-                      "flds": "",
-                      "grbx": null,
-                      "fldr": "\ue0fa",
-                      "stato": 1,
-                      "soab": 0,
-                      "flgt": 0,
-                      "flne": 0,
-                      "cadr": "",
-                      "cads": "",
-                      "flbt": 0,
-                      "repl": 0,
-                      "id": 410883,
-                      "grp": 13591,
-                      "camp": "QBOOKS",
-                      "tot": "00",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 0,
-                      "file": "TBOOKS",
-                      "flin": 0,
-                      "rnd": 0,
-                      "dft": "",
-                      "upab": 1,
-                      "cls": 0,
-                      "cedt": {
-                          "clas": "detext",
-                          "mask": "",
-                          "frmt": "",
-                          "up": 0
+                    "flle": 0,
+                    "flds": "",
+                    "grbx": null,
+                    "fldr": "\ue0fa",
+                    "stato": 1,
+                    "soab": 0,
+                    "flgt": 0,
+                    "flne": 0,
+                    "cadr": "",
+                    "cads": "",
+                    "flbt": 0,
+                    "repl": 0,
+                    "id": 410883,
+                    "grp": 13591,
+                    "camp": "QBOOKS",
+                    "tot": "00",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 0,
+                    "file": "TBOOKS",
+                    "flin": 0,
+                    "rnd": 0,
+                    "dft": "",
+                    "upab": 1,
+                    "cls": 0,
+                    "cedt": {
+                        "clas": "detext",
+                        "mask": "",
+                        "frmt": "",
+                        "up": 0
                     },
-                      "fleq": 0,
-                      "tsep": 0,
-                      "width": 15.38,
-                      "align": 0,
-                      "len": 255,
-                      "inab": 1,
-                      "vis": 1,
-                      "sign": 0,
-                      "t": "I",
-                      "klb": "numerolibri",
-                      "lbl": {
-                          "lung": "$numerolibri",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 0,
+                    "tsep": 0,
+                    "width": 15.38,
+                    "align": 0,
+                    "len": 255,
+                    "inab": 1,
+                    "vis": 1,
+                    "sign": 0,
+                    "t": "I",
+                    "klb": "numerolibri",
+                    "lbl": {
+                        "lung": "$numerolibri",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 0,
-                      "flab": 0,
-                                                                                      "seq": 5,
-
-
-                      "wrk": 0,
-                      "req": 1,
-                      "fllk": 0,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 0,
+                    "flab": 0,
+                    "seq": 5,
+                    "wrk": 0,
+                    "req": 1,
+                    "fllk": 0,
+                    "loadv": 0,
+                    "pk": 0
                 },
                 {
-                      "flle": 1,
-                      "flds": "",
-                      "grbx": null,
-                      "fldr": "",
-                      "stato": 1,
-                      "soab": 3,
-                      "flgt": 1,
-                      "flne": 1,
-                      "cadr": "",
-                      "cads": "",
-                      "flbt": 1,
-                      "repl": 0,
-                      "id": 9999906,
-                      "grp": 13591,
-                      "camp": "DELIVERDATE",
-                      "tot": "",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 1,
-                      "file": "",
-                      "flin": 1,
-                      "rnd": 0,
-                      "dft": "",
-                      "upab": 1,
-                      "cls": 0,
-                      "cedt": {
-                          "clas": "decalendar",
-                          "mask": "",
-                          "frmt": "",
-                          "up": 0
+                    "flle": 1,
+                    "flds": "",
+                    "grbx": null,
+                    "fldr": "",
+                    "stato": 1,
+                    "soab": 3,
+                    "flgt": 1,
+                    "flne": 1,
+                    "cadr": "",
+                    "cads": "",
+                    "flbt": 1,
+                    "repl": 0,
+                    "id": 9999906,
+                    "grp": 13591,
+                    "camp": "DELIVERDATE",
+                    "tot": "",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 1,
+                    "file": "",
+                    "flin": 1,
+                    "rnd": 0,
+                    "dft": "",
+                    "upab": 1,
+                    "cls": 0,
+                    "cedt": {
+                        "clas": "decalendar",
+                        "mask": "",
+                        "frmt": "",
+                        "up": 0
                     },
-                      "fleq": 1,
-                      "tsep": 0,
-                      "width": 10.76,
-                      "align": 0,
-                      "len": 100,
-                      "inab": 1,
-                      "vis": 1,
-                      "sign": 0,
-                      "t": "Z",
-                      "klb": "deliverdate",
-                      "lbl": {
-                              "lung": "$data di consegna",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 1,
+                    "tsep": 0,
+                    "width": 10.76,
+                    "align": 0,
+                    "len": 100,
+                    "inab": 1,
+                    "vis": 1,
+                    "sign": 0,
+                    "t": "Z",
+                    "klb": "deliverdate",
+                    "lbl": {
+                        "lung": "$data di consegna",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 1,
-                      "flab": 1,
-                                                                                      "seq": 6,
-
-
-                      "wrk": 0,
-                      "req": 0,
-                      "fllk": 1,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 1,
+                    "flab": 1,
+                    "seq": 6,
+                    "wrk": 0,
+                    "req": 0,
+                    "fllk": 1,
+                    "loadv": 0,
+                    "pk": 0
                 },
                 {
-                      "flle": 0,
-                      "flds": "",
-                      "grbx": 11523,
-                      "fldr": "\ue019",
-                      "stato": 1,
-                      "soab": 0,
-                      "flgt": 0,
-                      "flne": 0,
-                      "cadr": "",
-                      "cads": "",
-                      "flbt": 0,
-                      "repl": 0,
-                      "id": 9999907,
-                      "grp": 13591,
-                      "camp": "DELIVERMODE",
-                      "tot": "00",
-                      "clbl": 0,
-                      "dec": 0,
-                      "flge": 0,
-                      "file": "",
-                      "flin": 0,
-                      "rnd": 0,
-                      "dft": 3,
-                      "upab": 1,
-                      "cls": 0,
-                      "cedt": {
-                          "kvs": {
-                              "kv": [
+                    "flle": 0,
+                    "flds": "",
+                    "grbx": 11523,
+                    "fldr": "\ue019",
+                    "stato": 1,
+                    "soab": 0,
+                    "flgt": 0,
+                    "flne": 0,
+                    "cadr": "",
+                    "cads": "",
+                    "flbt": 0,
+                    "repl": 0,
+                    "id": 9999907,
+                    "grp": 13591,
+                    "camp": "DELIVERMODE",
+                    "tot": "00",
+                    "clbl": 0,
+                    "dec": 0,
+                    "flge": 0,
+                    "file": "",
+                    "flin": 0,
+                    "rnd": 0,
+                    "dft": 3,
+                    "upab": 1,
+                    "cls": 0,
+                    "cedt": {
+                        "kvs": {
+                            "kv": [
                                 {
-                                      "val": "0",
-                                      "fromd": 1,
-                                      "klb": "dhl",
-                                      "lbl": {
-                                          "lung": "$DHL",
-                                          "col1": "",
-                                          "brev": "",
-                                          "col2": ""
+                                    "val": "0",
+                                    "fromd": 1,
+                                    "klb": "dhl",
+                                    "lbl": {
+                                        "lung": "$DHL",
+                                        "col1": "",
+                                        "brev": "",
+                                        "col2": ""
                                     }
                                 },
                                 {
-                                      "val": "1",
-                                      "fromd": 1,
-                                      "klb": "ups",
-                                      "lbl": {
-                                          "lung": "$UPS",
-                                          "col1": "",
-                                          "brev": "",
-                                          "col2": ""
+                                    "val": "1",
+                                    "fromd": 1,
+                                    "klb": "ups",
+                                    "lbl": {
+                                        "lung": "$UPS",
+                                        "col1": "",
+                                        "brev": "",
+                                        "col2": ""
                                     }
                                 },
                                 {
-                                      "val": "2",
-                                      "fromd": 1,
-                                      "klb": "amano",
-                                      "lbl": {
-                                            "lung": "$A mano",
-                                          "col1": "",
-                                          "brev": "",
-                                          "col2": ""
+                                    "val": "2",
+                                    "fromd": 1,
+                                    "klb": "amano",
+                                    "lbl": {
+                                        "lung": "$A mano",
+                                        "col1": "",
+                                        "brev": "",
+                                        "col2": ""
                                     }
                                 }
                             ]
                         },
-                          "clas": "decombo",
-                          "up": 0
+                        "clas": "decombo",
+                        "up": 0
                     },
-                      "fleq": 0,
-                      "tsep": 0,
-                      "width": 7,
-                      "align": 0,
-                      "len": 1,
-                      "inab": 1,
-                      "vis": 1,
-                      "sign": 0,
-                      "t": "I",
-                      "klb": "delivermode",
-                      "lbl": {
-                              "lung": "$Modalit\u00c3\u00a0 di consegna",
-                          "col1": "",
-                          "brev": "",
-                          "col2": ""
+                    "fleq": 0,
+                    "tsep": 0,
+                    "width": 7,
+                    "align": 0,
+                    "len": 1,
+                    "inab": 1,
+                    "vis": 1,
+                    "sign": 0,
+                    "t": "I",
+                    "klb": "delivermode",
+                    "lbl": {
+                        "lung": "$Modalit\u00c3\u00a0 di consegna",
+                        "col1": "",
+                        "brev": "",
+                        "col2": ""
                     },
-                      "fllt": 0,
-                      "flab": 0,
-                                                                                      "seq": 7,
-
-
-                      "wrk": 0,
-                      "req": 1,
-                      "fllk": 0,
-                      "loadv": 0,
-                      "pk": 0
+                    "fllt": 0,
+                    "flab": 0,
+                    "seq": 7,
+                    "wrk": 0,
+                    "req": 1,
+                    "fllk": 0,
+                    "loadv": 0,
+                    "pk": 0
                 }
             ]
         },
-          "lvl": {
-              "vert": "",
-              "idpd": 10488,
-              "user": "",
-              "util": "",
-              "grup": "",
-              "appl": "BOOK"
+        "lvl": {
+            "vert": "",
+            "idpd": 10488,
+            "user": "",
+            "util": "",
+            "grup": "",
+            "appl": "BOOK"
         },
-          "qrys": {
-              "dft": ""
+        "qrys": {
+            "dft": ""
         },
-          "grpx": {
-              "grx": []
+        "grpx": {
+            "grx": []
         },
-          "colors": [],
-          "tablename": "tbookmng",
-          "decodings": [
+        "colors": [],
+        "tablename": "tbookmng",
+        "decodings": [
             {
-                  "opprrz": "",
-                  "cadepc": "",
-                                  "opprpc": "SELECT TITLE FROM TBOOKS WHERE IDBOOK  = <?>N<:>TBOOKMNG<.>IDBOOK<,>",
-                  "filerz": "",
-                  "camprz": "DESC_BOOK"
+                "opprrz": "",
+                "cadepc": "",
+                "opprpc": "SELECT TITLE FROM TBOOKS WHERE IDBOOK  = <?>N<:>TBOOKMNG<.>IDBOOK<,>",
+                "filerz": "",
+                "camprz": "DESC_BOOK"
             }
         ],
-          "layout": {
-              "grp": {
-                  "13591": {
-                      "x": 1
+        "layout": {
+            "grp": {
+                "13591": {
+                    "x": 1
                 }
             },
-              "grpx": {}
+            "grpx": {}
         },
-          "grps": {
-              "dft": "100",
-              "grp": [
+        "grps": {
+            "dft": "100",
+            "grp": [
                 {
-                      "id": 13591,
-                      "lid": 100,
-                      "stato": 1,
-                      "klb": "datibase",
-                      "lbl": {
-                            "lung": "$Dati base"
+                    "id": 13591,
+                    "lid": 100,
+                    "stato": 1,
+                    "klb": "datibase",
+                    "lbl": {
+                        "lung": "$Dati base"
                     },
-                      "fld": [
+                    "fld": [
                         {
-                              "id": 310719,
-                              "y": 0,
-                              "x": 0
+                            "id": 310719,
+                            "y": 0,
+                            "x": 0
                         },
                         {
-                              "id": 410883,
-                              "y": 0,
-                              "x": 0
+                            "id": 410883,
+                            "y": 0,
+                            "x": 0
                         },
                         {
-                              "id": 410884,
-                              "y": 0,
-                              "x": 0
+                            "id": 410884,
+                            "y": 0,
+                            "x": 0
                         },
                         {
-                              "id": 418403,
-                              "y": 0,
-                              "x": 0
+                            "id": 418403,
+                            "y": 0,
+                            "x": 0
                         },
                         {
-                              "id": 9999906,
-                              "y": 0,
-                              "x": 0
+                            "id": 9999906,
+                            "y": 0,
+                            "x": 0
                         },
                         {
-                              "id": 9999907,
-                              "y": 0,
-                              "x": 0
+                            "id": 9999907,
+                            "y": 0,
+                            "x": 0
                         }
                     ]
                 }
             ]
         },
-          "validations": [],
-          "dsauthorized": {
-              "write": true
+        "validations": [],
+        "dsauthorized": {
+            "write": true
         }
     }
 }

@@ -7,6 +7,7 @@ import traceback
 import sys
 import tkinter as tk
 import controller
+#import os
 # Importing ttk from tkinter
 from tkinter import ttk 
 from functools import partial
@@ -56,7 +57,7 @@ class MainWindow:
             explorerFrame, 
             text ="Treeview(hierarchical)"
         )
-        explorerLabel.pack(side = tk.TOP, fill=tk.BOTH, anchor="n")
+        explorerLabel.pack()
         
         # Creating treeview window
         explorerMenu = ttk.Treeview(explorerFrame)
@@ -64,10 +65,10 @@ class MainWindow:
         #explorerMenu.column("Edit", width=270, minwidth=270, stretch=tk.NO)
         #explorerMenu.heading("Edit", text="Edit",anchor=tk.W)
         #explorerMenu["displaycolumns"] = ("")
-        explorerMenu.pack(side = tk.TOP, fill=tk.BOTH, anchor="n")
+        explorerMenu.pack()
 
         setSeqBtn = ttk.Button(explorerFrame, text="Set seq", command=partial(controller.setSeq, self))
-        setSeqBtn.pack(side = tk.TOP, fill=tk.BOTH, anchor="n")
+        setSeqBtn.pack()
         setSeqBtn.pack_forget()
 
         #disablingList = [False] * 26
@@ -92,7 +93,7 @@ class MainWindow:
         )
         
         sheets = controller.TabManager(self, noteBook)
-        sheets.appendTab("new 1", "")
+        sheets.appendTab("new 1", "", "")
         sheets.nb.pack(side=tk.TOP, fill='x')
         #side=tk.RIGHT, fill=tk.BOTH, expand=True
         sheetsFrame.grid(row=0, column=1, rowspan=3, columnspan=2, padx=5, pady=5, sticky="NWE")
@@ -137,9 +138,12 @@ class MainWindow:
 
                 if (item[camp] == 0 or item[camp] == 1) and camp != "seq":
                                    
-                    
-                    flags.append(ttk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp, "FLAGCHANGE", None)))
-                    
+                    l = len(camp)
+                    for i in range(6 - l):
+                        camp += " "
+
+                    flags.append(ttk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp, "FLAGCHANGE")))
+                    camp = camp.strip(" ")
                     if vals[counter]: 
                         flags[len(flags)-1].state(['!disabled', 'selected'])
                         #flags[len(flags)-1].select()
@@ -161,8 +165,9 @@ class MainWindow:
 
                 if (item[camp] != 0 and item[camp] != 1 and camp!="cedt" and camp!="lbl") or camp == "seq":
                     txtFrame = ttk.Frame(group)
-                    #for i in range(6 - len(camp)):
-                     #   camp += " "
+                    l = len(camp)
+                    for i in range(6 - l):
+                        camp += " "
                     txtLabel = ttk.Label(txtFrame, text=camp, justify=tk.LEFT)
                     txtLabel.pack(side=tk.LEFT, anchor="w")
                     camp = camp.strip(" ")
@@ -232,9 +237,11 @@ class MainWindow:
         return group
        
     def onTreeClick(self, event):
+        controller.changes.clear()
         item = self.explorerMenu.identify('item',event.x,event.y)
         element = self.explorerMenu.item(item, "text")
-        controller.focusElement(self.sheets.tabContents[0], element)
+        currentTab = self.sheets.nb.index(self.sheets.nb.select())
+        controller.focusElement(self.sheets.tabContents[currentTab], element)
         element = str(element)
         element = element.strip("\"")
         if controller.isField(element):
@@ -242,7 +249,7 @@ class MainWindow:
             global flags
             flags = controller.getBooleanVals(element)
             self.editForm = self.drawEditForm(self.app, element, flags)
-            self.editForm.grid(row=3, column=0, columnspan=3, padx=(5,0), pady=(0,3))
+            self.editForm.grid(row=3, column=0, columnspan=3, padx=5, pady=3)
         else:
             self.editForm.grid_forget()
 
