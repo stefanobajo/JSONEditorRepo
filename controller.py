@@ -70,18 +70,23 @@ class TabManager:
             finally:
                 print(self.nb.tabs())
             
-            self.tabFrames.append(ttk.Frame(self.nb))
+            f = ttk.Frame(self.nb)
             
-            self.tabContents.append(tk.Text(self.tabFrames[t["index"]]))#, width=500, height=180))
+            txt = tk.Text(f)
+            sc = ttk.Scrollbar(f, orient=tk.VERTICAL ,command=txt.yview)
+            txt['yscrollcommand'] = sc.set
+            #, width=500, height=180))
             #app.grid_rowconfigure(2, weight=1)
-            self.tabContents[t["index"]].insert(tk.INSERT, t["content"])
-            self.tabContents[t["index"]].pack(fill=tk.BOTH)
-            self.tabFrames[t["index"]].pack(fill=tk.BOTH)
+            txt.insert(tk.INSERT, t["content"])
+            sc.pack(side=tk.RIGHT, fill=tk.Y)
+            txt.pack(fill=tk.X)
+            #self.tabFrames[t["index"]].pack(fill=tk.BOTH)
             #tabContent.pack()
             #tabContent.place(anchor='e')
             #self.tabFrames[t["index"]].pack()
-            self.nb.add(self.tabFrames[t["index"]], text=t["title"])
-
+            self.nb.add(f, text=t["title"])
+            self.tabContents.append(txt)
+            self.tabFrames.append(f)
 
 
 def focusElement(text, s):
@@ -201,7 +206,7 @@ def insertChange(name, changeType, event):
         val.rstrip("\n")
         changes[name] = val
 
-def setSeq():
+def setSeq(mw):
     f = open(directory, 'r')
     flines = f.readlines()
     counter = 1
@@ -316,7 +321,7 @@ def addElement(mw):
         element[item] = "temp"
 
     for fld in mw.editForm.winfo_children():
-        if(isinstance(fld, tk.Checkbutton)):
+        if(isinstance(fld, ttk.Checkbutton)):
             name = fld.cget("text")
             val = changes[fld.cget("text")]
             element[name] = 1 if val else 0

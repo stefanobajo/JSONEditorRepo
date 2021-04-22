@@ -11,7 +11,7 @@ import controller
 from tkinter import ttk 
 from functools import partial
 # Creating app window
-
+from ttkthemes import ThemedStyle
 
 
     
@@ -27,12 +27,13 @@ class MainWindow:
         #height = app.winfo_screenheight()               
 
         #app.geometry("%dx%d" % (width, height))
-
+        s = ThemedStyle(app)
+        s.set_theme('black')
         appMenu = self.drawMenuBar(app)
 
         
         app.config(menu=appMenu)
-        
+        app.config(background="#3a3b3a")
         '''
         app.grid_rowconfigure(0, weight=1)
         app.grid_rowconfigure(1, weight=1)
@@ -49,7 +50,7 @@ class MainWindow:
         #app.grid_columnconfigure(3, weight=3)
 
         explorerFrame = ttk.Frame(app)
-        explorerFrame.grid(row=0, column=0, rowspan=3, padx=(5,0))
+        explorerFrame.grid(row=0, column=0, rowspan=3, padx=5, pady=5, sticky="NW")
         
         explorerLabel = ttk.Label(
             explorerFrame, 
@@ -69,7 +70,7 @@ class MainWindow:
         setSeqBtn.pack(side = tk.TOP, fill=tk.BOTH, anchor="n")
         setSeqBtn.pack_forget()
 
-        disablingList = [False] * 26
+        #disablingList = [False] * 26
         
         '''
         editForm = self.drawEditForm(app, "test", disablingList)
@@ -92,9 +93,9 @@ class MainWindow:
         
         sheets = controller.TabManager(self, noteBook)
         sheets.appendTab("new 1", "")
-        sheets.nb.pack(side=tk.TOP, expand=True)
+        sheets.nb.pack(side=tk.TOP, fill='x')
         #side=tk.RIGHT, fill=tk.BOTH, expand=True
-        sheetsFrame.grid(row=0, column=1, rowspan=3, columnspan=2, padx=(10,0))
+        sheetsFrame.grid(row=0, column=1, rowspan=3, columnspan=2, padx=5, pady=5, sticky="NWE")
         
 
         self.app = app
@@ -122,7 +123,7 @@ class MainWindow:
         return menubar
 
     def drawEditForm(self, app, element, vals):
-        group = ttk.Labelframe(app, text=element)
+        group = ttk.Labelframe(app, borderwidth='2m', text=element)
         flags = list()
         textFlds = list()
         counter = 0
@@ -137,13 +138,15 @@ class MainWindow:
                 if (item[camp] == 0 or item[camp] == 1) and camp != "seq":
                                    
                     
-                    flags.append(tk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp, "FLAGCHANGE", None)))
+                    flags.append(ttk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp, "FLAGCHANGE", None)))
                     
                     if vals[counter]: 
-                        flags[len(flags)-1].select()
+                        flags[len(flags)-1].state(['!disabled', 'selected'])
+                        #flags[len(flags)-1].select()
                         controller.changes[camp] = True
                     else:
-                        flags[len(flags)-1].deselect()
+                        flags[len(flags)-1].state(['!disabled', '!selected'])
+                        #flags[len(flags)-1].deselect()
                         controller.changes[camp] = False
                     flags[len(flags)-1].grid(row=r, column=c)
                     counter += 1
@@ -158,8 +161,11 @@ class MainWindow:
 
                 if (item[camp] != 0 and item[camp] != 1 and camp!="cedt" and camp!="lbl") or camp == "seq":
                     txtFrame = ttk.Frame(group)
-                    txtLabel = ttk.Label(txtFrame, text=camp)
-                    txtLabel.pack(side=tk.LEFT)
+                    #for i in range(6 - len(camp)):
+                     #   camp += " "
+                    txtLabel = ttk.Label(txtFrame, text=camp, justify=tk.LEFT)
+                    txtLabel.pack(side=tk.LEFT, anchor="w")
+                    camp = camp.strip(" ")
                     txtText = tk.Text(txtFrame, width=15, height=1)
                     txtText.bind('<KeyRelease>', partial(controller.insertChange, camp, "TEXTCHANGE"))
                     try:
@@ -167,16 +173,17 @@ class MainWindow:
                     except:
                         print("ROTTO")
 
-                    txtText.pack(side=tk.RIGHT)
-
+                    txtText.pack(pady=1, padx=1, anchor="e")
+                    
                     textFlds.append(txtFrame)
                     txtFrame.grid(row=4+r, column=c)
                     counterTxt +=1
             #-------------CASO CAMPO CEDT-------------------
             txtFrame1 = ttk.Frame(group)
             txtLabel1 = ttk.Label(txtFrame1, text="cedt")
+            
             txtLabel1.pack(side=tk.LEFT)
-            txtText1 = tk.Text(txtFrame1, width=35, height=4)
+            txtText1 = tk.Text(txtFrame1, width=35, height=8)
             txtText1.bind('<KeyRelease>', partial(controller.insertChange, "cedt", "TEXTCHANGE"))
             #print(controller.formatStr('{"prova": 0,"di":0,"formattazione":2}'))
             try:
@@ -194,7 +201,7 @@ class MainWindow:
             txtFrame2 = ttk.Frame(group)
             txtLabel2 = ttk.Label(txtFrame2, text="lbl")
             txtLabel2.pack(side=tk.LEFT)
-            txtText2 = tk.Text(txtFrame2, width=35, height=4)
+            txtText2 = tk.Text(txtFrame2, width=35, height=8)
             txtText2.bind('<KeyRelease>', partial(controller.insertChange, "lbl", "TEXTCHANGE"))
             try:
                 txtText2.insert(tk.INSERT, controller.formatStr(str(item["lbl"])))
@@ -235,7 +242,7 @@ class MainWindow:
             global flags
             flags = controller.getBooleanVals(element)
             self.editForm = self.drawEditForm(self.app, element, flags)
-            self.editForm.grid(row=3, column=0, columnspan=3, padx=(5,0))
+            self.editForm.grid(row=3, column=0, columnspan=3, padx=(5,0), pady=(0,3))
         else:
             self.editForm.grid_forget()
 
