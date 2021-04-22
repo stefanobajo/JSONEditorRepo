@@ -115,7 +115,7 @@ class MainWindow:
 
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label="Open", command = partial(controller.openDialog, self))
-        filemenu.add_command(label="Save", command = partial(controller.globalSave, self, ""))
+        filemenu.add_command(label="Save", command = partial(controller.globalSave, self, "", True))
         filemenu.add_command(label="Exit", command = exit)
 
         menubar.add_cascade(label="File", menu=filemenu)

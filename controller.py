@@ -8,6 +8,7 @@ import json
 from functools import partial
 import os
 import traceback
+import ast
 
 content = ""
 #directory = ""
@@ -120,6 +121,8 @@ def openDialog(mw):
     content.rstrip("}")
     global contentObj
     contentObj = json.loads(content)
+    mw.explorerMenu.delete(*mw.explorerMenu.get_children())
+    mw.editForm.grid_forget()
     createTree(mw.explorerMenu, contentObj, "root")
     mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
     
@@ -241,18 +244,19 @@ def saveChanges(mw):
                     item[ch] = int(changes[ch])
                 else:
                     item[ch] = json.loads(changes[ch])
-        globalSave(None, json.dumps(contentObj, indent=4))
+        globalSave(mw, json.dumps(contentObj, indent=4), False)
     except:
         messagebox.showwarning("Errore!", "Rilevato un errore nella seguente modifica: \n" + changes[ch])
     
-def globalSave(mw, text):
-    if mw is not None:
+def globalSave(mw, text, fromMenu):
+    if fromMenu:
         text = mw.sheets.tabContents[0].get("1.0", tk.END)
     f = None
     global content
     content = text
     global contentObj 
     contentObj = None
+    global filename
     try:
         contentObj = json.loads(content)
     except:
@@ -268,7 +272,7 @@ def globalSave(mw, text):
             Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
             #global directory
             directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
-            global filename
+            
             filename = directory[::-1].split("/")[0][::-1]
 
         if f is None: f = open(directory, 'w')
@@ -279,13 +283,16 @@ def globalSave(mw, text):
             print("Error Saving")
         
         try:
+            #global filename
             mw.sheets.removeTab(filename)
             mw.sheets.appendTab(filename, text)
         except:
             print("No filename found")
 
         messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
-
+        mw.explorerMenu.delete(*mw.explorerMenu.get_children())
+        mw.editForm.grid_forget()
+        createTree(mw.explorerMenu, contentObj, "root")
 def formatStr(s):
     formattedString = ""
     for c in s:
@@ -298,11 +305,17 @@ def formatStr(s):
 
 def addElement(mw):
     element = dict()
+    global contentObj
+    flds = contentObj["def"]["flds"]["fld"]
+    #-----"SORT" del dictionary--------
+    for item in flds[0]:
+        element[item] = "temp"
+
     for fld in mw.editForm.winfo_children():
         if(isinstance(fld, tk.Checkbutton)):
             name = fld.cget("text")
             val = changes[fld.cget("text")]
-            element[name] = val
+            element[name] = 1 if val else 0
         else:
             if(isinstance(fld, ttk.Frame)):
                 frChidren = fld.winfo_children()
@@ -313,15 +326,22 @@ def addElement(mw):
                 if (name=="camp" and getField(val) is not None) or (name=="id" and getFieldFromId(val) is not None):
                     messagebox.showwarning("Attenzione!", "Stai cercando di inserire un elemento già presente!")
                     break
-
+                if name == "cedt" or name == "lbl":
+                    val = ast.literal_eval(val)
+                    #print(json.dumps(val, indent = 4))
+                    #val = json.dumps(val, indent = 4)
                 element[name] = val
     print("RESULT: \n")
     #print(formatStr(str(element)))
     try:
-        print(json.loads(json.dumps(element)))
+        x = json.loads(json.dumps(element))
+        flds.append(x)
+        globalSave(mw, json.dumps(contentObj, indent=4), False)
+        messagebox.showinfo("Successo!", "Hai aggiunto l'elemento " + x["camp"] + " al file.")
+        #print(json.dumps(x, indent=4))
         #print(json.loads(formatStr(str(element))))
     except:
-        print("STRINGA ROTTA")
+        traceback.print_exc()
 
                 
     
