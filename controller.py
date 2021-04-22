@@ -245,6 +245,8 @@ def saveChanges(mw):
                 else:
                     item[ch] = json.loads(changes[ch])
         globalSave(mw, json.dumps(contentObj, indent=4), False)
+        global directory
+        messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
     except:
         messagebox.showwarning("Errore!", "Rilevato un errore nella seguente modifica: \n" + changes[ch])
     
@@ -289,10 +291,12 @@ def globalSave(mw, text, fromMenu):
         except:
             print("No filename found")
 
-        messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
+        if fromMenu: 
+            messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
         mw.explorerMenu.delete(*mw.explorerMenu.get_children())
         mw.editForm.grid_forget()
         createTree(mw.explorerMenu, contentObj, "root")
+
 def formatStr(s):
     formattedString = ""
     for c in s:
@@ -343,7 +347,17 @@ def addElement(mw):
     except:
         traceback.print_exc()
 
-                
+def deleteElement(mw):
+    camp = mw.editForm.cget("text")
+    item = getField(camp)
+    if item is None:
+        messagebox.showerror("Delete error!", "You can't delete non-existing elements!")
+    else:
+        global contentObj
+        fld = contentObj["def"]["flds"]["fld"]
+        fld.remove(item)
+        globalSave(mw, json.dumps(contentObj, indent=4), False)
+        messagebox.showinfo("Successo!", "Hai eliminato l'elemento " + camp + " dal file.")
     
 
   

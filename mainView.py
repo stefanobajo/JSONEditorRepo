@@ -219,6 +219,8 @@ class MainWindow:
         saveBtn.grid(row=2, column=6)
         addBtn = ttk.Button(group, text="Add", command=partial(controller.addElement, self))
         addBtn.grid(row=3, column=6)
+        deleteBtn = ttk.Button(group, text="Delete", command=partial(controller.deleteElement, self))
+        deleteBtn.grid(row=0, column=7)
 
         return group
        
