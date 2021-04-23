@@ -44,14 +44,16 @@ class MainWindow:
         app.grid_rowconfigure(0, weight=1)
         app.grid_rowconfigure(1, weight=1)
         app.grid_rowconfigure(2, weight=1)
-        app.grid_rowconfigure(3, weight=6)
+        app.grid_rowconfigure(3, weight=1)
+        app.grid_rowconfigure(4, weight=1)
+        app.grid_rowconfigure(5, weight=6)
         app.grid_columnconfigure(0, weight=1)
         app.grid_columnconfigure(1, weight=4)
         app.grid_columnconfigure(2, weight=5)
         #app.grid_columnconfigure(3, weight=3)
 
         explorerFrame = ttk.Frame(app)
-        explorerFrame.grid(row=0, column=0, rowspan=3, padx=5, pady=5, sticky="NW")
+        explorerFrame.grid(row=0, column=0, rowspan=5, padx=5, pady=5, sticky="NW")
         
         explorerLabel = ttk.Label(
             explorerFrame, 
@@ -67,8 +69,26 @@ class MainWindow:
         #explorerMenu["displaycolumns"] = ("")
         explorerMenu.pack()
 
+        sheetsFrame = ttk.Frame(app)
+        noteBook = ttk.Notebook(
+            sheetsFrame
+        )
+        
+        sheets = controller.TabManager(self, noteBook)
+        #sheets.appendTab("", "", "")
+        sheets.nb.pack(fill=tk.BOTH)
+        #side=tk.RIGHT, fill=tk.BOTH, expand=True
+        sheetsFrame.grid(row=0, column=1, rowspan=5, columnspan=2, padx=5, pady=5, sticky="NWE")
+
+        newTabBtn = ttk.Button(explorerFrame, text="New Tab", command=partial(sheets.appendTab, "", "", ""))
+        newTabBtn.pack(fill=tk.X)
+
+        removeTabBtn = ttk.Button(explorerFrame, text="Remove Tab", command=sheets.removeSelectedTab)
+        removeTabBtn.pack(fill=tk.X)
+
         setSeqBtn = ttk.Button(explorerFrame, text="Set seq", command=partial(controller.setSeq, self))
         setSeqBtn.pack()
+
         setSeqBtn.pack_forget()
 
         #disablingList = [False] * 26
@@ -87,16 +107,7 @@ class MainWindow:
         # Inserting parent
         
         # Placing each child items in parent widget
-        sheetsFrame = ttk.Frame(app)
-        noteBook = ttk.Notebook(
-            sheetsFrame
-        )
         
-        sheets = controller.TabManager(self, noteBook)
-        sheets.appendTab("new 1", "", "")
-        sheets.nb.pack(side=tk.TOP, fill='x')
-        #side=tk.RIGHT, fill=tk.BOTH, expand=True
-        sheetsFrame.grid(row=0, column=1, rowspan=3, columnspan=2, padx=5, pady=5, sticky="NWE")
         
 
         self.app = app
@@ -118,6 +129,7 @@ class MainWindow:
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label="Open", command = partial(controller.openDialog, self))
         filemenu.add_command(label="Save", command = partial(controller.globalSave, self, "", True))
+        filemenu.add_command(label="Save As", command = partial(controller.saveAs, self))
         filemenu.add_command(label="Exit", command = exit)
 
         menubar.add_cascade(label="File", menu=filemenu)
@@ -138,12 +150,9 @@ class MainWindow:
 
                 if (item[camp] == 0 or item[camp] == 1) and camp != "seq":
                                    
-                    l = len(camp)
-                    for i in range(6 - l):
-                        camp += " "
+                    
 
                     flags.append(ttk.Checkbutton(group, text=camp, command=partial(controller.insertChange, camp, "FLAGCHANGE")))
-                    camp = camp.strip(" ")
                     if vals[counter]: 
                         flags[len(flags)-1].state(['!disabled', 'selected'])
                         #flags[len(flags)-1].select()
@@ -165,12 +174,9 @@ class MainWindow:
 
                 if (item[camp] != 0 and item[camp] != 1 and camp!="cedt" and camp!="lbl") or camp == "seq":
                     txtFrame = ttk.Frame(group)
-                    l = len(camp)
-                    for i in range(6 - l):
-                        camp += " "
+                   
                     txtLabel = ttk.Label(txtFrame, text=camp, justify=tk.LEFT)
                     txtLabel.pack(side=tk.LEFT, anchor="w")
-                    camp = camp.strip(" ")
                     txtText = tk.Text(txtFrame, width=15, height=1)
                     txtText.bind('<KeyRelease>', partial(controller.insertChange, camp, "TEXTCHANGE"))
                     try:
@@ -188,7 +194,7 @@ class MainWindow:
             txtLabel1 = ttk.Label(txtFrame1, text="cedt")
             
             txtLabel1.pack(side=tk.LEFT)
-            txtText1 = tk.Text(txtFrame1, width=35, height=8)
+            txtText1 = tk.Text(txtFrame1, width=40, height=8)
             txtText1.bind('<KeyRelease>', partial(controller.insertChange, "cedt", "TEXTCHANGE"))
             #print(controller.formatStr('{"prova": 0,"di":0,"formattazione":2}'))
             try:
@@ -206,7 +212,7 @@ class MainWindow:
             txtFrame2 = ttk.Frame(group)
             txtLabel2 = ttk.Label(txtFrame2, text="lbl")
             txtLabel2.pack(side=tk.LEFT)
-            txtText2 = tk.Text(txtFrame2, width=35, height=8)
+            txtText2 = tk.Text(txtFrame2, width=30, height=8)
             txtText2.bind('<KeyRelease>', partial(controller.insertChange, "lbl", "TEXTCHANGE"))
             try:
                 txtText2.insert(tk.INSERT, controller.formatStr(str(item["lbl"])))
@@ -249,7 +255,7 @@ class MainWindow:
             global flags
             flags = controller.getBooleanVals(element)
             self.editForm = self.drawEditForm(self.app, element, flags)
-            self.editForm.grid(row=3, column=0, columnspan=3, padx=5, pady=3)
+            self.editForm.grid(row=5, column=0, columnspan=3, padx=5, pady=3)
         else:
             self.editForm.grid_forget()
 

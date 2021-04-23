@@ -4,13 +4,14 @@ from tkinter import Message
 from tkinter import messagebox
 import tkinter as tk
 from tkinter import ttk
+from tkinter.filedialog import asksaveasfilename
 import json
 from functools import partial
 import os
 import traceback
 import ast
 
-content = ""
+#content = ""
 #directory = ""
 changes = dict()
 
@@ -20,30 +21,54 @@ class TabManager:
         nb.grid_propagate(True)
         nb.bind_all("<<Paste>>", partial(onPaste, mw))
         self.mw = mw
-        nb.bind_all("<<NotebookTabChanged>>", self.tabSelected)
         self.nb = nb
+        self.nb.bind_all("<<NotebookTabChanged>>", self.tabSelected)
         self.tabList = list()
         self.tabFrames = list()
         self.tabContents = list()
     
+    def removeSelectedTab(self):
+        index = self.nb.index(self.nb.select())
+        if len(self.tabList) > 1:
+            
+            self.removeTab(self.tabList[index]["title"])
+        else:
+            self.tabList[index]["content"] = " "
+            self.tabContents[index].delete("1.0", tk.END)
+            global contentObj
+            contentObj = None
+
     def removeTab(self, tabName):
         for t in self.tabList:
             if t["title"] == tabName:
+                self.nb.forget(t["index"])
+                self.tabContents.remove(self.tabContents[t["index"]])
+                self.tabFrames.remove(self.tabFrames[t["index"]])
                 self.tabList.remove(t)
+                break
         self.updateIndexes()
-        self.updateNoteBook()
+        #self.updateNoteBook()
     
     def updateIndexes(self):
         for i in range(len(self.tabList)):
             self.tabList[i]["index"] = i
 
-    def appendTab(self, tabName, content, dir):
+    def countNewTabs(self):
+        counter = 0
+        for t in self.tabList:
+            if t["title"].startswith("new"):
+                counter += 1
+        return counter
+
+    def appendTab(self, tabName, content, path):
         alreadyIn = False
-        if (len(self.tabList) == 1 and self.tabList[0]["title"] == "new 1"):
-            self.removeTab("new 1")
+
+        if tabName == "":
+            tabName = "new " + str(self.countNewTabs())
+        
         for t in self.tabList:
             if t["title"] == tabName:
-                t["content"] = content
+                self.editTab(tabName, content)
                 alreadyIn = True
 
         index = len(self.tabList)
@@ -52,25 +77,10 @@ class TabManager:
                 {
                     "title": tabName,
                     "content": content,
-                    "directory": dir,
+                    "directory": path,
                     "index": index
                 }
             )
-        self.updateNoteBook()
-        #self.showTabs()
-
-    def updateNoteBook(self):
-        self.tabContents.clear()
-        self.tabFrames.clear()
-        for t in self.tabList:
-            try:
-                self.nb.forget(t["index"])
-                
-            except:
-                print("")
-            finally:
-                print(self.nb.tabs())
-            
             f = ttk.Frame(self.nb)
             
             txt = tk.Text(f)
@@ -78,18 +88,35 @@ class TabManager:
             txt['yscrollcommand'] = sc.set
             #, width=500, height=180))
             #app.grid_rowconfigure(2, weight=1)
-            txt.insert(tk.INSERT, t["content"])
+            txt.insert(tk.INSERT, content)
             sc.pack(side=tk.RIGHT, fill=tk.Y)
-            txt.pack(fill=tk.X)
+            txt.pack(fill=tk.BOTH)
+            #f.grid(row=0, column=0, sticky="NSWE")
             #self.tabFrames[t["index"]].pack(fill=tk.BOTH)
             #tabContent.pack()
             #tabContent.place(anchor='e')
             #self.tabFrames[t["index"]].pack()
-            self.nb.add(f, text=t["title"])
+            self.nb.add(f, text=tabName)
             self.tabContents.append(txt)
             self.tabFrames.append(f)
-        #self.nb.select(len(self.tabFrames) - 1)
 
+        self.nb.select(index)
+        #self.tabSelected(None)
+
+    def editTab(self, tabName, text):
+        tab = None
+        tabWidget = None
+        for t in self.tabList:
+            if t["title"] == tabName:
+                tab = t
+        if tab is not None:
+            tab["content"] = text
+            tabWidget = self.tabContents[tab["index"]]
+        
+        if tabWidget is not None:
+            tabWidget.delete("1.0", tk.END)
+            tabWidget.insert(tk.INSERT, text)
+        
     def tabSelected(self, event):
         tabIndex = self.nb.index(self.nb.select())
         global directory
@@ -105,11 +132,14 @@ class TabManager:
             content.lstrip("{")
             content.rstrip("}")
             contentObj = json.loads(content)
+            self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
+            self.mw.editForm.grid_forget()
+            createTree(self.mw.explorerMenu, contentObj, "root")
+            self.mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
+    
 
-        self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
-        self.mw.editForm.grid_forget()
-        createTree(self.mw.explorerMenu, contentObj, "root")
-        self.mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
+        
+        
 
 
 
@@ -129,11 +159,16 @@ def focusElement(text, s):
 
 def onPaste(mw, event):
     global content
+    if content == "":
+        #["Options", "Opsies"][my_lang]
+        mw.sheets.nb.tab("current", text="new " + str(len(mw.sheets.tabList)))
     content = mw.app.clipboard_get()
     global contentObj
     contentObj = json.loads(content)
+    mw.explorerMenu.delete(*mw.explorerMenu.get_children())
+    mw.editForm.grid_forget()
     createTree(mw.explorerMenu, contentObj, "root")
-        
+    
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     #global directory
@@ -145,8 +180,7 @@ def openDialog(mw):
     #global filename
     filename = directory[::-1].split("/")[0][::-1]
     mw.sheets.appendTab(filename, content, directory)
-    
-    
+        
 def createTree(tree, jsonObj, fatherName):
     if fatherName == "root":
         fatherName = ""
@@ -190,15 +224,19 @@ def getFieldFromId(fid):
     return None
 
 def getField(name):
-    fld = contentObj["def"]["flds"]["fld"]
+    try:
+        fld = contentObj["def"]["flds"]["fld"]
 
-    for item in fld:
-        if item["camp"].casefold() == name.casefold():
-            return item
-    return None
+        for item in fld:
+            if item["camp"].casefold() == name.casefold():
+                return item
+        return None
+    except:
+        messagebox.showerror("Errore!", "Non sono riuscito a leggere uno dei campi :(")
+        return None
 
 def isField(element):
-    if getField(element) is not None:
+    if contentObj is not None and getField(element) is not None:
         return True
     else:
         return False
@@ -281,52 +319,62 @@ def saveChanges(mw):
         messagebox.showwarning("Errore!", "Rilevato un errore nella seguente modifica: \n" + changes[ch])
     
 def globalSave(mw, text, fromMenu):
-    if fromMenu:
+    global directory
+    if directory is None or directory == "":
+        saveAs(mw)
+    else:
         currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
-        text = mw.sheets.tabContents[currentTab].get("1.0", tk.END)
-    f = None
-    global content
-    content = text
-    global contentObj 
-    contentObj = None
-    global filename
-    try:
-        contentObj = json.loads(content)
-    except:
-        messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
+        
+        if fromMenu:
+            currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
+            text = mw.sheets.tabContents[currentTab].get("1.0", tk.END)
 
-    if contentObj is not None:
-
+        mw.sheets.tabList[currentTab]["content"] = text
+        f = None
+        global content
+        content = text
+        global contentObj 
+        contentObj = None
+        global filename
         try:
-            global directory
-            f = open(directory, 'w')
+            contentObj = json.loads(content)
         except:
-            traceback.print_exc()
-            Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-            #global directory
-            directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+            messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
+
+        if contentObj is not None:
+
+            try:
+                #global directory
+                f = open(directory, 'w')
+            except:
+                
+                traceback.print_exc()
+                '''
+                Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+                #global directory
+                directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+                
+                filename = directory[::-1].split("/")[0][::-1]
+                '''
+            if f is None: f = open(directory, 'w')
             
-            filename = directory[::-1].split("/")[0][::-1]
+            try:
+                f.write(text)
+            except:
+                print("Error Saving")
+            
+            try:
+                #global filename
+                mw.sheets.editTab(filename, text)
+            except:
+                print("No filename found")
 
-        if f is None: f = open(directory, 'w')
-        
-        try:
-            f.write(text)
-        except:
-            print("Error Saving")
-        
-        try:
-            #global filename
-            mw.sheets.removeTab(filename)
-            mw.sheets.appendTab(filename, text, directory)
-        except:
-            print("No filename found")
+            if fromMenu: 
+                messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
 
-        if fromMenu: 
-            messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
-        mw.explorerMenu.delete(*mw.explorerMenu.get_children())
-        mw.editForm.grid_forget()
-        createTree(mw.explorerMenu, contentObj, "root")
+            mw.explorerMenu.delete(*mw.explorerMenu.get_children())
+            mw.editForm.grid_forget()
+            createTree(mw.explorerMenu, contentObj, "root")
 
 def formatStr(s):
     formattedString = ""
@@ -357,6 +405,7 @@ def addElement(mw):
                 name = frChidren[0].cget("text")
                 val = frChidren[1].get("1.0", tk.END)
                 #print(name + " ------------- " + val)
+                val = val.strip(" ")
                 val = val.rstrip("\n")
                 if (name=="camp" and getField(val) is not None) or (name=="id" and getFieldFromId(val) is not None):
                     messagebox.showwarning("Attenzione!", "Stai cercando di inserire un elemento già presente!")
@@ -390,7 +439,52 @@ def deleteElement(mw):
         globalSave(mw, json.dumps(contentObj, indent=4), False)
         messagebox.showinfo("Successo!", "Hai eliminato l'elemento " + camp + " dal file.")
     
+def saveAs(mw):
+    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
 
-  
+    index = mw.sheets.nb.index(mw.sheets.nb.select())
+    tab = mw.sheets.tabList[index]
+    tabWidget = mw.sheets.tabContents[index]
+
+    global directory
+    global filename
+    global content
+    global contentObj
+    #global contentObj
+
+    if directory != "":
+        directory.rstrip(filename)
+        saveDirectory = asksaveasfilename(initialdir = directory, title = "Save file", initialfile = filename, filetypes = (("json files","*.json"), ("txt files","*.txt"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+    
+    else:
+        saveDirectory = asksaveasfilename(initialdir = "C:/", title = "Save file", initialfile = filename, filetypes = (("json files","*.json"), ("txt files","*.txt"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+    
+
+    directory = saveDirectory
+    filename = directory[::-1].split("/")[0][::-1]
+    content = tabWidget.get("1.0", tk.END)
+    tab["title"] = filename
+    tab["content"] = content
+    tab["directory"] = directory
+    content.lstrip("{")
+    content.rstrip("}")
+    try:
+        contentObj = json.loads(content)
+    except:
+        contentObj = None
+        print("NOT JSON")
+    try:
+        f = open(directory, 'w')
+        f.write(content)
+        f.close()
+        messagebox.showinfo("Successo!", "File salvato con successo!")
+        mw.explorerMenu.delete(*mw.explorerMenu.get_children())
+        mw.editForm.grid_forget()
+        createTree(mw.explorerMenu, contentObj, "root")
+    except:
+        messagebox.showerror("Error!", "Error saving file!")
+    
+        
+    #mw.sheets.tabSelected(None)
 
 
