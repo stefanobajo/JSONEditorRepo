@@ -30,7 +30,6 @@ class TabManager:
     def removeSelectedTab(self):
         index = self.nb.index(self.nb.select())
         if len(self.tabList) > 1:
-            
             self.removeTab(self.tabList[index]["title"])
         else:
             self.tabList[index]["content"] = " "
@@ -39,14 +38,31 @@ class TabManager:
             contentObj = None
 
     def removeTab(self, tabName):
+        
+        index = -1
         for t in self.tabList:
             if t["title"] == tabName:
-                self.nb.forget(t["index"])
-                self.tabContents.remove(self.tabContents[t["index"]])
-                self.tabFrames.remove(self.tabFrames[t["index"]])
-                self.tabList.remove(t)
-                break
+                index = t["index"]
+            '''    
+            else:
+                if tabName.startswith("new") and t["title"].startswith("new") and t["directory"] == "":
+                    t["title"] = "new " + str(counter)
+                    self.nb.tab(t["index"], text = t["title"])
+                    counter += 1
+            '''
+        
+        self.nb.forget(index)
+        self.tabContents.remove(self.tabContents[index])
+        self.tabFrames.remove(self.tabFrames[index])
+        self.tabList.remove(t)
         self.updateIndexes()
+        for t in self.tabList:
+            if t["title"].startswith("new") and t["directory"] == "":
+                newTitle = "new " + str(t["index"])
+                t["title"] = newTitle
+                self.nb.tab(t["index"], text = newTitle)
+                
+        
         #self.updateNoteBook()
     
     def updateIndexes(self):
@@ -56,7 +72,7 @@ class TabManager:
     def countNewTabs(self):
         counter = 0
         for t in self.tabList:
-            if t["title"].startswith("new"):
+            if t["title"].startswith("new") and t["directory"] == "":
                 counter += 1
         return counter
 
@@ -65,9 +81,10 @@ class TabManager:
 
         if tabName == "":
             tabName = "new " + str(self.countNewTabs())
+            #path = ""
         
         for t in self.tabList:
-            if t["title"] == tabName:
+            if t["title"] == tabName and t["directory"] == path:
                 self.editTab(tabName, content)
                 alreadyIn = True
 
@@ -126,17 +143,18 @@ class TabManager:
         global content
         content = self.tabList[tabIndex]["content"]
         global contentObj
-        if content == "":
-            contentObj = None 
-        else:
+        try:
             content.lstrip("{")
             content.rstrip("}")
             contentObj = json.loads(content)
-            self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
-            self.mw.editForm.grid_forget()
-            createTree(self.mw.explorerMenu, contentObj, "root")
             self.mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
-    
+        except:
+            contentObj = None 
+        self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
+        self.mw.editForm.grid_forget()
+        createTree(self.mw.explorerMenu, contentObj, "root")
+        
+
 
         
         
@@ -159,9 +177,8 @@ def focusElement(text, s):
 
 def onPaste(mw, event):
     global content
-    if content == "":
-        #["Options", "Opsies"][my_lang]
-        mw.sheets.nb.tab("current", text="new " + str(len(mw.sheets.tabList)))
+    
+        
     content = mw.app.clipboard_get()
     global contentObj
     contentObj = json.loads(content)
@@ -454,18 +471,19 @@ def saveAs(mw):
 
     if directory != "":
         directory.rstrip(filename)
-        saveDirectory = asksaveasfilename(initialdir = directory, title = "Save file", initialfile = filename, filetypes = (("json files","*.json"), ("txt files","*.txt"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+        saveDirectory = asksaveasfilename(initialdir = directory, title = "Save file", initialfile = filename, defaultextension = "*.*", filetypes = (("json files","*.json"), ("txt files","*.txt"))) # show an "Open" dialog box and return the path to the selected file, ("all files","*.*")
     
     else:
-        saveDirectory = asksaveasfilename(initialdir = "C:/", title = "Save file", initialfile = filename, filetypes = (("json files","*.json"), ("txt files","*.txt"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+        saveDirectory = asksaveasfilename(initialdir = "C:/", title = "Save file", defaultextension = "*.*", initialfile = filename, filetypes = (("json files","*.json"), ("txt files","*.txt"))) # show an "Open" dialog box and return the path to the selected file
     
-
-    directory = saveDirectory
-    filename = directory[::-1].split("/")[0][::-1]
+    if saveDirectory != "":
+        directory = saveDirectory
+        filename = directory[::-1].split("/")[0][::-1]
     content = tabWidget.get("1.0", tk.END)
     tab["title"] = filename
     tab["content"] = content
     tab["directory"] = directory
+    mw.sheets.nb.tab("current", text= filename)
     content.lstrip("{")
     content.rstrip("}")
     try:
