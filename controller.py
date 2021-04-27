@@ -29,13 +29,8 @@ class TabManager:
     
     def removeSelectedTab(self):
         index = self.nb.index(self.nb.select())
-        if len(self.tabList) > 1:
-            self.removeTab(self.tabList[index]["title"])
-        else:
-            self.tabList[index]["content"] = " "
-            self.tabContents[index].delete("1.0", tk.END)
-            global contentObj
-            contentObj = None
+        self.removeTab(self.tabList[index]["title"])
+        
 
     def removeTab(self, tabName):
         
@@ -56,6 +51,10 @@ class TabManager:
         self.tabFrames.remove(self.tabFrames[index])
         self.tabList.remove(t)
         self.updateIndexes()
+        try:
+            self.nb.select(0)
+        except:
+            print("Tabs cleared")
         for t in self.tabList:
             if t["title"].startswith("new") and t["directory"] == "":
                 newTitle = "new " + str(t["index"])
@@ -153,6 +152,11 @@ class TabManager:
         self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
         self.mw.editForm.grid_forget()
         createTree(self.mw.explorerMenu, contentObj, "root")
+
+        child_id = "deffldsfld"
+        self.mw.explorerMenu.focus_set()
+        self.mw.explorerMenu.selection_set((child_id, child_id))
+        self.mw.explorerMenu.focus(child_id)
         
 
 
@@ -181,10 +185,17 @@ def onPaste(mw, event):
         
     content = mw.app.clipboard_get()
     global contentObj
-    contentObj = json.loads(content)
-    mw.explorerMenu.delete(*mw.explorerMenu.get_children())
-    mw.editForm.grid_forget()
-    createTree(mw.explorerMenu, contentObj, "root")
+    
+    try:
+        contentObj = json.loads(content)
+    except:
+        contentObj = None
+
+    if contentObj is not None:
+        mw.explorerMenu.delete(*mw.explorerMenu.get_children())
+        mw.editForm.grid_forget()
+        createTree(mw.explorerMenu, contentObj, "root")
+        mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
     
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -211,9 +222,11 @@ def createTree(tree, jsonObj, fatherName):
                     tree.insert(fatherName, 'end', fatherName+str(counter), text='"'+ item["camp"] + '"')
                 except:
                     tree.insert(fatherName, 'end', fatherName+str(counter), text=str(counter))
+                #print(fatherName+str(counter))
                 nodeText = createTree(tree, item, fatherName+str(counter))
             else:
                 tree.insert(fatherName, 'end', fatherName+str(item), text=str(item))
+                #print(fatherName+str(item))
                 val = jsonObj[item]
                 nodeText = createTree(tree, val, fatherName+str(item))
 
@@ -280,33 +293,44 @@ def insertChange(name, changeType, event=None):
         changes[name] = val
 
 def setSeq(mw):
-    global directory
-    f = open(directory, 'r')
-    flines = f.readlines()
+
+    currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
+    text = mw.sheets.tabContents[currentTab].get("1.0", tk.END)
+
+    #global directory
+    #f = open(directory, 'r')
+    #flines = f.readlines()
     counter = 1
-    for line in range(len(flines)):
-        whiteSpaces = flines[line].count(" ")
-        flines[line] = flines[line].strip()
-        if flines[line].startswith('"seq":'):
+    string = ""
+    for line in iter(text.splitlines()):#range(len(flines)):
+        whiteSpaces = line.count(" ")
+        line = line.strip()
+        if line.startswith('"seq":'):
             s = ""
             for i in range(whiteSpaces):
                 s += " "
-            flines[line] = s + '"seq": ' + str(counter) + ',\n'
+            line = s + '"seq": ' + str(counter) + ',\n'
+            
             counter += 1
-        s = ""
-        for i in range(whiteSpaces):
-            s += " "
-        flines[line] = s + flines[line] + '\n'
-    
-    f = open(directory, 'w')
-    f.writelines(flines)
-    f = open(directory, 'r')
-    string = f.read()
-    f.close()
+        else:
+            s = ""
+            for i in range(whiteSpaces):
+                s += " "
+            line = s + line + '\n'
+        string += line
+
+    global directory
+    if directory != "":
+        try:
+            f = open(directory, 'w')
+            f.write(json.dumps(json.loads(string), indent=4))
+            f.close()
+        except:
+            print("Directory machine broke :(")
     global filename
-    mw.sheets.removeTab(filename)
+    mw.sheets.editTab(filename, string)
     
-    mw.sheets.appendTab(filename, string, directory)
+    #mw.sheets.appendTab(filename, string, directory)
     messagebox.showinfo("Changes Saved!", "Sequence numbers setted")
 
 def saveChanges(mw):
@@ -343,7 +367,7 @@ def globalSave(mw, text, fromMenu):
         currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
         
         if fromMenu:
-            currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
+            #currentTab = mw.sheets.nb.index(mw.sheets.nb.select())
             text = mw.sheets.tabContents[currentTab].get("1.0", tk.END)
 
         mw.sheets.tabList[currentTab]["content"] = text
