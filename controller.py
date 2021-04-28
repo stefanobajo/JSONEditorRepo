@@ -153,17 +153,14 @@ class TabManager:
         self.mw.editForm.grid_forget()
         createTree(self.mw.explorerMenu, contentObj, "root")
 
-        child_id = "deffldsfld"
-        self.mw.explorerMenu.focus_set()
-        self.mw.explorerMenu.selection_set((child_id, child_id))
-        self.mw.explorerMenu.focus(child_id)
+        child_id = "deffldsfld0"
+        #self.mw.explorerMenu.focus_set()
+        #self.mw.explorerMenu.selection_set((child_id, child_id))
+        try:
+            self.mw.explorerMenu.see(child_id)
+        except:
+            print("not datasource")
         
-
-
-        
-        
-
-
 
 def focusElement(text, s):
     text.tag_remove('found', '1.0', tk.END)
