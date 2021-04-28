@@ -377,7 +377,8 @@ def globalSave(mw, text, fromMenu):
         try:
             contentObj = json.loads(content)
         except:
-            messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
+            if filename.endswith(".json"): 
+                messagebox.showwarning("Errore!", "Forse hai commesso degli errori!")
 
         if contentObj is not None:
 
@@ -413,6 +414,14 @@ def globalSave(mw, text, fromMenu):
             mw.explorerMenu.delete(*mw.explorerMenu.get_children())
             mw.editForm.grid_forget()
             createTree(mw.explorerMenu, contentObj, "root")
+        else:
+            if filename.endswith(".txt") and directory != "":
+                f = open(directory, 'w')
+                f.write(text)
+                f.close()
+                messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
+
+
 
 def formatStr(s):
     formattedString = ""
