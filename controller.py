@@ -193,6 +193,13 @@ def onPaste(mw, event):
         mw.editForm.grid_forget()
         createTree(mw.explorerMenu, contentObj, "root")
         mw.setSeqBtn.pack(side = tk.BOTTOM, fill=tk.X)
+        child_id = "deffldsfld0"
+        #self.mw.explorerMenu.focus_set()
+        #self.mw.explorerMenu.selection_set((child_id, child_id))
+        try:
+            mw.explorerMenu.see(child_id)
+        except:
+            print("not datasource")
     
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -351,7 +358,7 @@ def saveChanges(mw):
                         item[ch] = changes[ch]
         globalSave(mw, json.dumps(contentObj, indent=4), False)
         global directory
-        messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
+        #messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
     except:
         traceback.print_exc()
         messagebox.showwarning("Errore!", "Rilevato un errore nella seguente modifica: \n" + changes[ch])
