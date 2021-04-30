@@ -60,6 +60,9 @@ class TabManager:
                 newTitle = "new " + str(t["index"])
                 t["title"] = newTitle
                 self.nb.tab(t["index"], text = newTitle)
+
+        self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
+        self.mw.editForm.grid_forget()
                 
         
         #self.updateNoteBook()
@@ -154,8 +157,6 @@ class TabManager:
         createTree(self.mw.explorerMenu, contentObj, "root")
 
         child_id = "deffldsfld0"
-        #self.mw.explorerMenu.focus_set()
-        #self.mw.explorerMenu.selection_set((child_id, child_id))
         try:
             self.mw.explorerMenu.see(child_id)
         except:
@@ -203,8 +204,12 @@ def onPaste(mw, event):
     
 def openDialog(mw):
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    #global directory
-    directory = askopenfilename(initialdir = "C:/", title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
+    
+    if len(mw.sheets.tabList) > 0: 
+        initialdir = mw.sheets.tabList[len(mw.sheets.tabList)-1]["directory"]
+    else:
+        initialdir = "C:/"
+    directory = askopenfilename(initialdir = initialdir, title = "Select file", filetypes = (("json files","*.json"), ("all files","*.*"))) # show an "Open" dialog box and return the path to the selected file
     f = open(directory)
     #global content
     content = f.read()
@@ -280,10 +285,10 @@ def getBooleanVals(element):
     values = list()
     item = getField(element)
     for camp in item:
-        if item[camp] == 0 and camp != "seq":
+        if item[camp] == 0 and camp != "seq" and camp != "soab":
             values.append(False)
         else:
-            if item[camp] == 1 and camp != "seq":
+            if item[camp] == 1 and camp != "seq" and camp != "soab":
                 values.append(True)
     return values
 
@@ -349,7 +354,7 @@ def saveChanges(mw):
                 else:
                     item[ch] = 0
             else:
-                if ch=="id" or ch=="seq" or ch=="width" or ch=="len":
+                if ch=="id" or ch=="seq" or ch=="width" or ch=="len" or ch=="soab":
                     item[ch] = int(changes[ch])
                 else:
                     if ch=="cedt" or ch=="lbl":
@@ -415,12 +420,17 @@ def globalSave(mw, text, fromMenu):
             except:
                 print("No filename found")
 
-            if fromMenu: 
-                messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
+            messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
 
             mw.explorerMenu.delete(*mw.explorerMenu.get_children())
             mw.editForm.grid_forget()
             createTree(mw.explorerMenu, contentObj, "root")
+            child_id = "deffldsfld0"
+        
+            try:
+                self.mw.explorerMenu.see(child_id)
+            except:
+                print("not datasource")
         else:
             if filename.endswith(".txt") and directory != "":
                 f = open(directory, 'w')
@@ -464,9 +474,13 @@ def addElement(mw):
                 if (name=="camp" and getField(val) is not None) or (name=="id" and getFieldFromId(val) is not None):
                     messagebox.showwarning("Attenzione!", "Stai cercando di inserire un elemento già presente!")
                     break
-                if name == "cedt" or name == "lbl":
-                    val = ast.literal_eval(val)
-                    #print(json.dumps(val, indent = 4))
+
+                if name=="id" or name=="seq" or name=="width" or name=="len" or name=="soab":
+                    val = int(val)
+                else:
+                    if name == "cedt" or name == "lbl":
+                        val = ast.literal_eval(val)
+                        #print(json.dumps(val, indent = 4))
                     #val = json.dumps(val, indent = 4)
                 element[name] = val
     print("RESULT: \n")
@@ -536,6 +550,11 @@ def saveAs(mw):
         mw.explorerMenu.delete(*mw.explorerMenu.get_children())
         mw.editForm.grid_forget()
         createTree(mw.explorerMenu, contentObj, "root")
+        child_id = "deffldsfld0"
+        try:
+            self.mw.explorerMenu.see(child_id)
+        except:
+            print("not datasource")
     except:
         messagebox.showerror("Error!", "Error saving file!")
     

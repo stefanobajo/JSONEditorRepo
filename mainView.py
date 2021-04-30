@@ -148,7 +148,7 @@ class MainWindow:
                 r = counter % 4
                 c = int(counter / 4)
 
-                if (item[camp] == 0 or item[camp] == 1) and camp != "seq":
+                if (item[camp] == 0 or item[camp] == 1) and camp != "seq" and camp != "soab":
                                    
                     
 
@@ -172,7 +172,7 @@ class MainWindow:
                 r = counterTxt % 4
                 c = int(counterTxt / 4)
 
-                if (item[camp] != 0 and item[camp] != 1 and camp!="cedt" and camp!="lbl") or camp == "seq":
+                if (item[camp] != 0 and item[camp] != 1 and camp!="cedt" and camp!="lbl") or camp == "seq" or camp=="soab":
                     txtFrame = ttk.Frame(group)
                    
                     txtLabel = ttk.Label(txtFrame, text=camp, justify=tk.LEFT)
@@ -234,11 +234,11 @@ class MainWindow:
         
         
         saveBtn = ttk.Button(group, text="Save", command=partial(controller.saveChanges, self))    
-        saveBtn.grid(row=2, column=6)
+        saveBtn.grid(row=1, column=6)
         addBtn = ttk.Button(group, text="Add", command=partial(controller.addElement, self))
-        addBtn.grid(row=3, column=6)
+        addBtn.grid(row=2, column=6)
         deleteBtn = ttk.Button(group, text="Delete", command=partial(controller.deleteElement, self))
-        deleteBtn.grid(row=0, column=7)
+        deleteBtn.grid(row=3, column=6)
 
         return group
        
