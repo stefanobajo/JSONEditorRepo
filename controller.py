@@ -428,7 +428,7 @@ def globalSave(mw, text, fromMenu):
             child_id = "deffldsfld0"
         
             try:
-                self.mw.explorerMenu.see(child_id)
+                mw.explorerMenu.see(child_id)
             except:
                 print("not datasource")
         else:
