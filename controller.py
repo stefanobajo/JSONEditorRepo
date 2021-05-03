@@ -49,8 +49,10 @@ class TabManager:
         self.nb.forget(index)
         self.tabContents.remove(self.tabContents[index])
         self.tabFrames.remove(self.tabFrames[index])
-        self.tabList.remove(t)
+        self.tabList.remove(self.tabList[index])
         self.updateIndexes()
+        self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
+        self.mw.editForm.grid_forget()
         try:
             self.nb.select(0)
         except:
@@ -61,8 +63,7 @@ class TabManager:
                 t["title"] = newTitle
                 self.nb.tab(t["index"], text = newTitle)
 
-        self.mw.explorerMenu.delete(*self.mw.explorerMenu.get_children())
-        self.mw.editForm.grid_forget()
+        
                 
         
         #self.updateNoteBook()
@@ -354,13 +355,19 @@ def saveChanges(mw):
                 else:
                     item[ch] = 0
             else:
-                if ch=="id" or ch=="seq" or ch=="width" or ch=="len" or ch=="soab":
-                    item[ch] = int(changes[ch])
+                if ch == "grbx" and len(changes[ch]) == 0:
+                            item[ch] = json.loads("null")
                 else:
-                    if ch=="cedt" or ch=="lbl":
-                        item[ch] = json.loads(changes[ch])
-                    else: 
-                        item[ch] = changes[ch]
+                    if ch=="id" or ch=="seq" or ch=="width" or ch=="len" or ch=="soab" or ch == "grp" or ch == "grbx":
+                        if changes[ch].find(".") != -1: item[ch] = float(changes[ch])
+                        else:
+                            if not (ch=="grp" and changes[ch] == ""):
+                                item[ch] = int(changes[ch])
+                    else:
+                        if ch=="cedt" or ch=="lbl":
+                            item[ch] = json.loads(changes[ch])
+                        else: 
+                            item[ch] = changes[ch]
         globalSave(mw, json.dumps(contentObj, indent=4), False)
         global directory
         #messagebox.showinfo("Save was succesfull", "File " + directory + " was successfully saved!")
@@ -474,12 +481,18 @@ def addElement(mw):
                 if (name=="camp" and getField(val) is not None) or (name=="id" and getFieldFromId(val) is not None):
                     messagebox.showwarning("Attenzione!", "Stai cercando di inserire un elemento già presente!")
                     break
-
-                if name=="id" or name=="seq" or name=="width" or name=="len" or name=="soab":
-                    val = int(val)
-                else:
-                    if name == "cedt" or name == "lbl":
-                        val = ast.literal_eval(val)
+                if name == "grbx" and len(val) == 0:
+                        val = json.loads("null")
+                else:    
+                    if name=="id" or name=="seq" or name=="width" or name=="len" or name=="soab" or name == "grp" or name=="grbx":
+                        if val.find(".") != -1: val = float(val)
+                        else:
+                            if not (len(val)==0 and name=="grp"):
+                                val = int(val)
+                    else:
+                        if name == "cedt" or name == "lbl":
+                            val = ast.literal_eval(val)
+                    
                         #print(json.dumps(val, indent = 4))
                     #val = json.dumps(val, indent = 4)
                 element[name] = val
